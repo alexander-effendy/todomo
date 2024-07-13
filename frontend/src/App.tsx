@@ -1,11 +1,12 @@
-import './index.css'
+import { BrowserRouter } from 'react-router-dom';
+import Pages from './Pages';
+import './index.css';
 
 function App() {
-
   return (
-    <div className="w-screen h-screen bg-blue-100 grid place-items-center">
-      <div className="text-2xl font-bold">Hello there!</div>
-    </div>
+    <BrowserRouter>  
+      <Pages />
+    </BrowserRouter>
   )
 }
 

@@ -1,29 +1,23 @@
 import { Link } from 'react-router-dom';
-// import { getKindeServerSession } from "@kinde-oss/kinde-auth-react/server";
 
 import { buttonVariants } from "@/components/ui/button";
 import MaxWidthWrapper from './MaxWidthWrapper';
 import { ArrowRight } from "lucide-react";
-import {useKindeAuth} from "@kinde-oss/kinde-auth-react";
+import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { Button } from '@/components/ui/button';
 const Navbar = () => {
 
   // const { getUser } = getKindeServerSession();
-  const user = false;
-  const isAdmin = true;
+  const isAdmin = false;
 
-  const { login, register, logout } = useKindeAuth();
+  const { login, register, logout, user, isAuthenticated } = useKindeAuth();
 
   const handleRegister = () => {
     register();
     console.log('registerrrr');
   }
-  const handleLogin = () => {
-    login();
-  }
-  const handleLogout = () => {
-    logout();
-  }
+  const handleLogin = () => login();
+  const handleLogout = () => logout();
 
   return (
     <nav className="sticky z-[100] h-14 inset-x-0 top-0 w-full border-b border-gray-200 bg-white opacity-95 backdrop-filter backdrop-blur-md">
@@ -36,7 +30,7 @@ const Navbar = () => {
 
           <div className="h-full flex items-center space-x-4">
             {/* if user logged in, then got logout button */}
-            {user ? (
+            {isAuthenticated ? (
               <>
                 <Button onClick={handleLogout} className={buttonVariants({
                   size: 'sm', 
@@ -44,6 +38,7 @@ const Navbar = () => {
                 })}>
                   Sign Out
                 </Button>
+
                 {isAdmin ? (
                   <Button onClick={handleLogout} className={buttonVariants({
                     size: 'sm', 

@@ -1,6 +1,6 @@
 import MaxWidthWrapper from "@/component/MaxWidthWrapper";
-import useMediaQuery from '@mui/material/useMediaQuery';
-import { Button } from "@/components/ui/button";
+// import useMediaQuery from '@mui/material/useMediaQuery';
+// import { Button } from "@/components/ui/button";
 
 const Home = () => {
 
@@ -11,7 +11,7 @@ const Home = () => {
 
   return (
     <MaxWidthWrapper>
-      <section className="flex w-full h-screen">
+      <section className="flex w-full h-screen pt-5">
         {/* bar */}
         <section className="w-[300px] bg-[#f4f4f4]">
           

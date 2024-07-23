@@ -3,10 +3,11 @@ import Pages from './Pages';
 import './index.css';
 import Navbar from '@/component/Navbar';
 
+
 import { KindeProvider } from "@kinde-oss/kinde-auth-react";
 
 const onRedirectCallback = (user: any, app_state: any) => {
-  console.log({ user, app_state });
+  console.log('redirect callback function called' + { user, app_state });
 };
 
 function App() {
@@ -18,11 +19,11 @@ function App() {
 		logoutUri="http://localhost:5173"
     onRedirectCallback={onRedirectCallback}
 	>
-      <BrowserRouter>
-        <Navbar />
-        <Pages />
-      </BrowserRouter>
-    </KindeProvider>
+    <BrowserRouter>
+      <Navbar />
+      <Pages />
+    </BrowserRouter>
+  </KindeProvider>
   )
 }
 

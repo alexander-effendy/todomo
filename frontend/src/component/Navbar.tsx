@@ -1,87 +1,63 @@
-import { Link } from 'react-router-dom';
-
-import { buttonVariants } from "@/components/ui/button";
 import MaxWidthWrapper from './MaxWidthWrapper';
-import { ArrowRight } from "lucide-react";
 import { useKindeAuth } from "@kinde-oss/kinde-auth-react";
 import { Button } from '@/components/ui/button';
-const Navbar = () => {
+import axios from 'axios';
+import { useEffect } from 'react';
 
-  // const { getUser } = getKindeServerSession();
-  const isAdmin = false;
-
-  const { login, register, logout, user, isAuthenticated } = useKindeAuth();
-
-  const handleRegister = () => {
-    register();
-    console.log('registerrrr');
+const handleSignUp = async (getToken: any, user:any) => {
+  const userInfo = {
+    id: user.id,
+    email: user.email,
+    given_name: user.given_name,
+    family_name: user.family_name
+  };
+  try {
+    const token = await getToken();
+    const response = await axios.post('http://localhost:3000/api/auth', userInfo, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    console.log('User authenticated and added to the database:', response.data);
+  } catch (error) {
+    console.error('Error during signing up:', error);
   }
+}
+
+const Navbar = () => {
+  const { login, register, logout, isAuthenticated, user, getToken } = useKindeAuth();
+
+  const handleRegister = async () => {
+    register(); // kinde register
+    await handleSignUp(getToken, user); // local db register
+  }
+
   const handleLogin = () => login();
   const handleLogout = () => logout();
 
+  useEffect(() => {
+    const registerAndSignUp = async () => {
+      if (isAuthenticated && user && getToken) {
+        await handleSignUp(getToken, user);
+      }
+    };
+    registerAndSignUp();
+  }, [isAuthenticated, user, getToken])
+
   return (
-    <nav className="sticky z-[100] h-14 inset-x-0 top-0 w-full border-b border-gray-200 bg-white opacity-95 backdrop-filter backdrop-blur-md">
+    <nav className="grid place-items-center sticky z-[100] h-screen w-screen border-b border-gray-200 bg-white opacity-95 backdrop-filter backdrop-blur-md">
       <MaxWidthWrapper>
-
-        <div className="flex h-14 items-center justify-between border-b border-zinc-200">
-          <Link to="/" className="flex z-40 font-semibold">
-            todo<span className="text-green-600">mo</span>
-          </Link>
-
-          <div className="h-full flex items-center space-x-4">
-            {/* if user logged in, then got logout button */}
+        <div className="grid place-items-center">
+            <p>Hi {user?.given_name}!</p>
+          
             {isAuthenticated ? (
-              <>
-                <Button onClick={handleLogout} className={buttonVariants({
-                  size: 'sm', 
-                  variant: 'ghost',
-                })}>
-                  Sign Out
-                </Button>
-
-                {isAdmin ? (
-                  <Button onClick={handleLogout} className={buttonVariants({
-                    size: 'sm', 
-                    variant: 'ghost',
-                  })}>
-                    Dashboard
-                  </Button>
-                ) : null}
-                <Link to="/configure/upload" className={buttonVariants({
-                  size: 'sm', 
-                  className: "hidden sm:flex items-center gap-1",
-                })}>
-                  Add Task
-                  <ArrowRight className="ml-1.5 h-5 w-5" />
-                </Link>
-              </>
+              <Button onClick={handleLogout}>Sign Out</Button>
             ) : (
               <>
-                <Button onClick={handleRegister} className={buttonVariants({
-                  size: 'sm', 
-                  variant: 'ghost',
-                })}>
-                  Sign Up
-                </Button>
-                <Button onClick={handleLogin} className={buttonVariants({
-                  size: 'sm', 
-                  variant: 'ghost',
-                })}>
-                  Login
-                </Button>
-                
-                <div className="h-8 w-px bg-zinc-200 hidden sm:block" />
-
-                <Link to="/configure/upload" className={buttonVariants({
-                  size: 'sm', 
-                  className: "hidden sm:flex items-center gap-1",
-                })}>
-                  Add Task
-                  <ArrowRight className="ml-1.5 h-5 w-5" />
-                </Link>
+                <Button onClick={handleRegister}>Sign Up</Button>
+                <Button onClick={handleLogin}>Login</Button>
               </>
-            )}
-          </div>
+          )}
         </div>
       </MaxWidthWrapper>
     </nav>

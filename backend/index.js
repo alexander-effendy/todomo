@@ -16,55 +16,52 @@ const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
 });
 
-// const getUserFromToken = (authorizationHeader) => {
-//   if (!authorizationHeader || !authorizationHeader.startsWith('Bearer ')) {
-//     console.log('beleblebele')
-//     throw new Error('Unauthorized');
-//   }
-//   console.log('pass')
-//   const token = authorizationHeader.split(' ')[1];
-//   try {
-//     const decoded = jwt.verify(token, process.env.KINDE_PUBLIC_KEY, {
-//       algorithms: ['RS256'],
-//     });
-//     return decoded;
-//   } catch (err) {
-//     throw new Error('Unauthorized getUserFromToken failed');
-//   }
-// };
+// function toconvert jwt public key
+const jose = require('node-jose');
+const jwks = {
+  keys: [
+    {
+      e: "AQAB",
+      n: "lPz7A_f7kxFatGRg-fNVd1IBuIhLPeFNe3vOouul9Z9iDfrxBI0D0536XV0ooCFIYD_IP4SeRrbYpDTda82MisZnP5TBCIOFBkwjjRzRegGscpNLmHWago0gS9RbUuMjs1EAcBqzTt2RiUHoqyguvwm2RUbCxkIe0Ts9c6fO_LLw5fR0l2CNvIR3riHef_SYMt5X-94THCamp72Sdbt21qFhcowWbAvprHKq7ZKwEzxdXqRKs6ElBCMOdhuQD3RH4apOJBme4VuSU2osPlFO8pMyDwkcLdA32_aGll4MBHik5YBFHeAg1ufLYpfFY-imVk9hU6DEAz4LyWGalxekXw",
+      alg: "RS256",
+      kid: "ea:5f:92:57:a0:24:4b:3a:4b:2b:11:65:c5:ff:d5:46",
+      kty: "RSA",
+      use: "sig"
+    }
+  ]
+};
 
-// const ensureUserExists = async (req, res, next) => {
-//   console.log('checking if user exists');
-//   try {
-//     console.log('try la')
-//     const kindeUser = getUserFromToken(req.headers.authorization);
-//     console.log('kinde user is: ', kindeUser);
-//     const { sub: kinde_user_id, email, given_name, family_name } = kindeUser;
+async function getKey() {
+  const keystore = await jose.JWK.asKeyStore(jwks);
+  const key = keystore.get({ use: 'sig' });
+  const publicKey = key.toPEM(false);
+  console.log(publicKey);
+  return publicKey;
+}
 
-//     console.log('oe')
-//     const userResult = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
+const verifyToken = async (req, res, next) => {
+  const token = req.headers.authorization?.split(' ')[1];
+  if (!token) {
+    console.log('token non')
+    return res.status(401).json({ message: 'Unauthorized!!' });
+  }\
 
-//     if (userResult.rows.length === 0) {
-//       await pool.query(
-//         'INSERT INTO users (kinde_user_id, email, username, given_name, family_name) VALUES ($1, $2, $3, $4, $5)',
-//         [id, email, email, given_name, family_name]
-//       );
-//     }
+  try {
+    console.log('token is: ', token);
+    const public_key = await getKey();
+    console.log('public keyg is: ', public_key);
+    const decoded = jwt.verify(token, public_key, {
+      algorithms: ['RS256'],
+    });
+    req.user = decoded;
+    next();
+  } catch (err) {
+    return res.status(401).json({ message: 'Unauthorized!' });
+  }
+};
 
-//     req.user = (await pool.query('SELECT * FROM users WHERE email = $1', [email])).rows[0];
-//     next();
-//   } catch (err) {
-//     res.status(401).json({ error: err.message });
-//   }
-// };
-
-// app.post('/api/auth', ensureUserExists, (req, res) => {
-//   res.json({ message: 'User authenticated', user: req.user });
-// });
-
-app.post('/api/auth', async (req, res) =>  {
+app.post('/api/auth', verifyToken, async (req, res) =>  {
   const { id, email, given_name, family_name } = req.body;
-  console.log(id, email, given_name, family_name);
   try {
     // Check if user already exists
     const userResult = await pool.query('SELECT * FROM users WHERE email = $1', [email]);

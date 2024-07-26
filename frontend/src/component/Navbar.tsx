@@ -13,6 +13,7 @@ const handleSignUp = async (getToken: any, user:any) => {
   };
   try {
     const token = await getToken();
+    console.log('token is ', token);
     const response = await axios.post('http://localhost:3000/api/auth', userInfo, {
       headers: {
         Authorization: `Bearer ${token}`,

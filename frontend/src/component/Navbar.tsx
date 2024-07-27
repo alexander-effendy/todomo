@@ -13,7 +13,6 @@ const handleSignUp = async (getToken: any, user:any) => {
   };
   try {
     const token = await getToken();
-    console.log('token is ', token);
     const response = await axios.post('http://localhost:3000/api/auth', userInfo, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -39,6 +38,7 @@ const Navbar = () => {
   useEffect(() => {
     const registerAndSignUp = async () => {
       if (isAuthenticated && user && getToken) {
+        console.log(user);
         await handleSignUp(getToken, user);
       }
     };
@@ -46,7 +46,7 @@ const Navbar = () => {
   }, [isAuthenticated, user, getToken])
 
   return (
-    <nav className="grid place-items-center sticky z-[100] h-screen w-screen border-b border-gray-200 bg-white opacity-95 backdrop-filter backdrop-blur-md">
+    <nav className="grid place-items-center sticky z-[100] border-b border-gray-200 bg-white opacity-95 backdrop-filter backdrop-blur-md">
       <MaxWidthWrapper>
         <div className="grid place-items-center">
             <p>Hi {user?.given_name}!</p>

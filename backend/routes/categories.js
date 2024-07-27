@@ -1,12 +1,22 @@
 const express = require('express');
-const pool = require('../config/db');
-const ensureUserExists = require('../middleware/ensureUserExists');
+const verifyToken = require('../middleware/verifyUser');
+const { Pool } = require('pg');
+const dotenv = require('dotenv');
+
+dotenv.config();
+
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+});
+
 const router = express.Router();
 
 // Get all tasks for the authenticated user
-router.get('/categories', ensureUserExists, async (req, res) => {
+router.get('/categories', verifyToken, async (req, res) => {
+  const email = req.query.email;
+  console.log(email);
   try {
-    const result = await pool.query('SELECT * FROM categories WHERE userId = $1', [req.user.id]);
+    const result = await pool.query('SELECT * FROM categories WHERE user_email = $1', [email]);
     res.json(result.rows);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -14,12 +24,13 @@ router.get('/categories', ensureUserExists, async (req, res) => {
 });
 
 // Add a new task for the authenticated user
-router.post('/categories', ensureUserExists, async (req, res) => {
-  const { title, category_id } = req.body;
+router.post('/categories', verifyToken, async (req, res) => {
+  const { name, userEmail } = req.body;
+  console.log(name, userEmail);
   try {
     const result = await pool.query(
-      'INSERT INTO categories (userId, id, title) VALUES ($1, $2, $3) RETURNING *',
-      [req.user.id, category_id, title]
+      'INSERT INTO categories (user_email, category_name) VALUES ($1, $2) RETURNING *',
+      [userEmail, name]
     );
     res.json(result.rows[0]);
   } catch (err) {

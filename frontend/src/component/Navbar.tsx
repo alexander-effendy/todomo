@@ -19,7 +19,7 @@ const handleSignUp = async (getToken: any, user:any) => {
         Authorization: `Bearer ${token}`,
       },
     });
-    console.log('User authenticated and added to the database:', response.data);
+    console.log('User authenticated and will be inserted into database if new. Otherwise no.', response.data);
   } catch (error) {
     console.error('Error during signing up:', error);
   }

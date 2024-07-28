@@ -12,7 +12,9 @@
   "dependencies": {
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
+    "@headlessui/react": "^2.1.2",
     "@kinde-oss/kinde-auth-react": "^4.0.1",
+    "@mui/icons-material": "^5.16.5",
     "@mui/material": "^5.16.1",
     "@radix-ui/react-select": "^2.1.1",
     "@radix-ui/react-slot": "^1.1.0",

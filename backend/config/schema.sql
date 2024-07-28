@@ -10,15 +10,16 @@ CREATE TABLE if not exists users (
   created_AT TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE categories (
+CREATE TABLE if not exists categories (
   id SERIAL PRIMARY KEY,
   category_name TEXT NOT NULL,
   user_email VARCHAR(255) REFERENCES users(email),
   created_AT TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- CREATE TABLE tasks (
---   id SERIAL PRIMARY KEY,
---   category_id INTEGER REFERENCES categories(id),
---   title TEXT NOT NULL
--- );
+CREATE TABLE if not exists tasks (
+  id SERIAL PRIMARY KEY,
+  task_name TEXT NOT NULL,
+  category_id INTEGER REFERENCES categories(id),
+  created_AT TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

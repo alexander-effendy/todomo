@@ -7,12 +7,15 @@ import { useEffect, useState, useContext } from 'react';
 import { useKindeAuth } from '@kinde-oss/kinde-auth-react';
 import { getCategory } from '../api/category';
 
-
+import AssignmentIcon from '@mui/icons-material/Assignment';
 import AddCategoryModal from '@/component/Dialog/AddCategoryDialog';
 import { Context } from "@/UseContext";
+
+import { Separator } from "@/components/ui/separator"
+
 const Home = () => {
 
-  const { currentCategory, setCurrentCategory, update, setUpdate } = useContext(Context);
+  const { currentCategory, setCurrentCategory, update, currentCategoryName, setCurrentCategoryName } = useContext(Context);
 
   const [categoryModalOpen, setCategoryModalOpen] = useState<boolean>(false);
 
@@ -65,7 +68,7 @@ const Home = () => {
         {isAuthenticated && user ? (
           <section className="flex h-full w-full">
             {/* sidebar */}
-            <section className="border-r-[1px] border-gray-300 w-[200px] pr-[10px]">
+            <section className="border-r-[1px] border-gray-300 w-[300px] pr-[15px]">
               <Button 
                 className="mt-[10px] flex justify-start items-center w-full hover:bg-[#eff1f4]"
                 onClick={() => setCategoryModalOpen(true)}
@@ -79,14 +82,40 @@ const Home = () => {
                   <Button 
                     onClick={() => {
                       setCurrentCategory(category.id);
+                      setCurrentCategoryName(category.category_name)
                       console.log(currentCategory);
-                    }} 
+                    }}
                     className={`rounded-[5px] flex justify-start items-center hover:bg-[#eff1f4] ${category.id === currentCategory && 'bg-[#e0e2e6] hover:bg-[#e0e2e6]'}`}
-                    key={category.id}>{category.category_name}
+                    key={category.id}><AssignmentIcon className="text-[#b1b4b7] mr-[5px]"/> {category.category_name}
                   </Button>
                 ))}
               </div>
             </section>
+
+            {/* category content */}
+            <div className="mt-[50px] flex-grow mx-auto max-w-[900px] bg-blue-20s0">
+              <section className="flex flex-col items-start">
+                <span className="text-3xl font-bold">{currentCategoryName}</span>
+                {/* map existing tasks, empty if none */}
+                <div>
+                  <Button className="text-gray-400 items-start pl-0 hover:text-black">       
+                    <AddCircleIcon className="mr-[5px]"/>
+                    <div className="my-auto">Add task</div>
+                  </Button>
+                </div>
+
+                {/* map existing sections, empty if none */}
+                <Button className="w-full flex bg-none text-white hover:text-black">
+                  <Separator asChild className="my-3 bg-background">
+                    <div className="opacity-0 hover:opacity-100 visible py-3 flex items-center text-xs text-black uppercase before:flex-[1_1_0%] before:border-t before:border-gray-600 before:me-6 after:flex-[1_1_0%] after:border-t after:border-gray-600 after:ms-6 dark:before:border-gray-700 dark:after:border-gray-700 transition-opacity duration-300">
+                      Add section
+                    </div>
+                  </Separator>
+                </Button>
+              </section>
+              
+            </div>
+
             
           </section>
         ) : (

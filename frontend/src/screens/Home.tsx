@@ -1,5 +1,4 @@
 import MaxWidthWrapper from "@/component/MaxWidthWrapper";
-// import useMediaQuery from '@mui/material/useMediaQuery';
 import { Button } from '@/components/ui/button';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import { useEffect, useState, useContext } from 'react';
@@ -18,26 +17,21 @@ const Home = () => {
   const { currentCategory, setCurrentCategory, update, currentCategoryName, setCurrentCategoryName } = useContext(Context);
 
   const [categoryModalOpen, setCategoryModalOpen] = useState<boolean>(false);
+  const [addSectionActive, setAddSectionActive] = useState<boolean>(false);
+  const [addTaskActive, setAddTaskActive] = useState<boolean>(false);
 
   const openModal = () => setCategoryModalOpen(true);
   const closeModal = () => setCategoryModalOpen(false);
 
-  // const smallScreen = useMediaQuery('(max-width:600px)');
-  // const mediumScreen = useMediaQuery('(max-width:1000px)');
-  // const bigScreen = useMediaQuery('(max-width:1500px)');
-  // const largeScreen = useMediaQuery('(max-width:2000px)');
-
   const { getToken, isAuthenticated, user } = useKindeAuth();
   const [categories, setCategories] = useState<any>([]);
 
-  // const [update, setUpdate] = useState<boolean>(true);
   useEffect(() => {
     const fetchCategories = async () => {
       if (isAuthenticated) {
         const token = await getToken();
         if (user) {
           const data = await getCategory(token, user.email);
-          // console.log(data);
           setCategories(data);
         }
       }
@@ -48,18 +42,6 @@ const Home = () => {
   useEffect(() => {
     // void
   }, [])
-
-  // const handleAddCategory = async () => {
-  //   if (categoryInput.length < 3) {
-  //     alert('Category name length cannot be short than 3 letters');
-  //     return;
-  //   }
-  //   if (!user) return;
-  //   const token = await getToken();
-  //   const newCategory = await postCategory(token, categoryInput, user.email);
-  //   setCategories([...categories, newCategory]);
-  //   setCategoryInput('');
-  // }
 
   return (
     <MaxWidthWrapper>
@@ -98,25 +80,49 @@ const Home = () => {
                 <span className="text-3xl font-bold">{currentCategoryName}</span>
                 {/* map existing tasks, empty if none */}
                 <div>
-                  <Button className="text-gray-400 items-start pl-0 hover:text-black">       
+                  <Button className="mt-5 text-gray-400 items-start pl-0 hover:text-black"
+                    onClick={() => {setAddTaskActive(true); setAddSectionActive(false)}}
+                  >       
                     <AddCircleIcon className="mr-[5px]"/>
                     <div className="my-auto">Add task</div>
                   </Button>
                 </div>
 
+                {addTaskActive &&
+                  <div className="p-[10px] mt-[10px] w-full border-[2px] border-gray-400 rounded-[10px]">
+                    <input className="mb-[10px] focus:outline-none px-[15px] w-full mt-[10px]" placeholder="Task name"></input>
+                    <section className="flex justify-end gap-2 border-t-[1px] border-gray-400 pt-3">
+                      <Button className="bg-gray-100 rounded-[5px] hover:bg-gray-300" onClick={() => setAddTaskActive(false)}>Cancel</Button>
+                      <Button className="bg-green-200 rounded-[5px] hover:bg-green-300">Add section</Button>
+                    </section>
+                  </div>
+                }
+
                 {/* map existing sections, empty if none */}
-                <Button className="w-full flex bg-none text-white hover:text-black">
+
+                {addSectionActive &&
+                  <div className="p-[10px] mt-[10px] w-full border-[2px] border-gray-400 rounded-[10px]">
+                    <input className="mb-[10px] focus:outline-none px-[15px] w-full mt-[10px]" placeholder="Section name"></input>
+                    <section className="flex justify-end gap-2 border-t-[1px] border-gray-400 pt-3">
+                      <Button className="bg-gray-100 rounded-[5px] hover:bg-gray-300" onClick={() => setAddSectionActive(false)}>Cancel</Button>
+                      <Button className="bg-green-200 rounded-[5px] hover:bg-green-300">Add section</Button>
+                    </section>
+                  </div>
+                }
+                {!addSectionActive &&
+                <Button className={`w-full flex bg-none text-white hover:text-black ${addSectionActive && 'text-black'}`}
+                  onClick={() => { setAddSectionActive(true); setAddTaskActive(false)}}
+                >
                   <Separator asChild className="my-3 bg-background">
                     <div className="opacity-0 hover:opacity-100 visible py-3 flex items-center text-xs text-black uppercase before:flex-[1_1_0%] before:border-t before:border-gray-600 before:me-6 after:flex-[1_1_0%] after:border-t after:border-gray-600 after:ms-6 dark:before:border-gray-700 dark:after:border-gray-700 transition-opacity duration-300">
                       Add section
                     </div>
                   </Separator>
                 </Button>
+                }
+                
               </section>
-              
             </div>
-
-            
           </section>
         ) : (
           <section className="w-full h-full grid place-items-center text-2xl font-bold">

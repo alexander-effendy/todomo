@@ -17,9 +17,18 @@ CREATE TABLE if not exists categories (
   created_AT TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE IF NOT EXISTS subcategories (
+  id SERIAL PRIMARY KEY,
+  subcategory_name TEXT NOT NULL,
+  category INTEGER REFERENCES categories(id),
+  subcategories_status BOOLEAN NOT NULL,
+  created_AT TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 CREATE TABLE if not exists tasks (
   id SERIAL PRIMARY KEY,
   task_name TEXT NOT NULL,
-  category_id INTEGER REFERENCES categories(id),
+  tasks BOOLEAN NOT NULL,
+  subcategory INTEGER REFERENCES subcategories(id),
   created_AT TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

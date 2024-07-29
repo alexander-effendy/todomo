@@ -7,7 +7,6 @@ export const getCategory = async (token: any, userEmail: any) => {
         Authorization: `Bearer ${token}`,
       },
     });
-    // console.log('Categories retrieved:', response.data);
     return response.data;
   } catch (error) {
     console.error('Error during fetching categories:', error);

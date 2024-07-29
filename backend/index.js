@@ -3,6 +3,8 @@ const cors = require('cors');
 const dotenv = require('dotenv');
 const authRoutes = require('./routes/auth');
 const categoryRoutes = require('./routes/categories');
+const subcategoryRoutes = require('./routes/subcategories');
+const generalTaskRoutes = require('./routes/generalTasks');
 
 dotenv.config();
 
@@ -14,6 +16,8 @@ app.use(cors({
 
 app.use('/api', authRoutes);
 app.use('/api', categoryRoutes);
+app.use('/api', subcategoryRoutes);
+app.use('/api', generalTaskRoutes);
 
 app.listen(3000, () => {
   console.log('Server is running on port 3000');

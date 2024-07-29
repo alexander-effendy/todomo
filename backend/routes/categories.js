@@ -38,4 +38,37 @@ router.post('/categories', verifyToken, async (req, res) => {
   }
 });
 
+// Delete a category by ID
+router.delete('/categories/:id', verifyToken, async (req, res) => {
+  const categoryId = req.params.id;
+  try {
+    const result = await pool.query('DELETE FROM categories WHERE id = $1 RETURNING *', [categoryId]);
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: 'Category not found' });
+    }
+    res.json(result.rows[0]);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Rename a category by ID
+router.put('/categories/:id', verifyToken, async (req, res) => {
+  const categoryId = req.params.id;
+  const { newName } = req.body;
+  try {
+    const result = await pool.query(
+      'UPDATE categories SET category_name = $1 WHERE id = $2 RETURNING *',
+      [newName, categoryId]
+    );
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: 'Category not found' });
+    }
+    res.json(result.rows[0]);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+
 module.exports = router;

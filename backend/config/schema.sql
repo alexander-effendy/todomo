@@ -25,10 +25,20 @@ CREATE TABLE IF NOT EXISTS subcategories (
   created_AT TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE if not exists generalTasks (
+  id SERIAL PRIMARY KEY,
+  task_name TEXT NOT NULL,
+  task_status BOOLEAN NOT NULL,
+  task_description VARCHAR(300) NOT NULL,
+  category INTEGER REFERENCES categories(id),
+  created_AT TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 CREATE TABLE if not exists tasks (
   id SERIAL PRIMARY KEY,
   task_name TEXT NOT NULL,
-  tasks BOOLEAN NOT NULL,
+  task_status BOOLEAN NOT NULL,
+  task_description VARCHAR(300) NOT NULL,
   subcategory INTEGER REFERENCES subcategories(id),
   created_AT TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

@@ -41,13 +41,36 @@ router.post('/categories', verifyToken, async (req, res) => {
 // Delete a category by ID
 router.delete('/categories/:id', verifyToken, async (req, res) => {
   const categoryId = req.params.id;
+  console.log(categoryId);
   try {
+    // Start a transaction
+    await pool.query('BEGIN');
+
+    // Delete all general tasks related to the category
+    await pool.query('DELETE FROM generalTasks WHERE category = $1', [categoryId]);
+
+    // Delete all tasks related to the subcategories of the category
+    await pool.query(`
+      DELETE FROM tasks 
+      WHERE subcategory IN (SELECT id FROM subcategories WHERE category = $1)
+    `, [categoryId]);
+
+    // Delete all subcategories related to the category
+    await pool.query('DELETE FROM subcategories WHERE category = $1', [categoryId]);
+
+    // Delete the category
     const result = await pool.query('DELETE FROM categories WHERE id = $1 RETURNING *', [categoryId]);
+
+    // Commit the transaction
+    await pool.query('COMMIT');
+
     if (result.rowCount === 0) {
       return res.status(404).json({ error: 'Category not found' });
     }
     res.json(result.rows[0]);
   } catch (err) {
+    // Rollback the transaction in case of an error
+    await pool.query('ROLLBACK');
     res.status(500).json({ error: err.message });
   }
 });

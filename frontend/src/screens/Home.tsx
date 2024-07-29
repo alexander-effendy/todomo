@@ -15,6 +15,14 @@ import { Context } from "@/UseContext";
 
 import { Separator } from "@/components/ui/separator"
 import { Checkbox } from "@/components/ui/checkbox"
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+
+import {
+  ContextMenu,
+  ContextMenuContent,
+  ContextMenuItem,
+  ContextMenuTrigger,
+} from "@/components/ui/context-menu";
 
 const Home = () => {
 
@@ -135,14 +143,28 @@ const Home = () => {
               <div className="flex flex-col">
                 {categories.map((category: any) => (
                   <Button 
-                    onClick={() => {
-                      setCurrentCategory(category.id);
-                      setCurrentCategoryName(category.category_name)
-                      console.log(currentCategory);
-                    }}
-                    className={`rounded-[5px] flex justify-start items-center hover:bg-[#eff1f4] ${category.id === currentCategory && 'bg-[#e0e2e6] hover:bg-[#e0e2e6]'}`}
-                    key={category.id}><AssignmentIcon className="text-[#b1b4b7] mr-[5px]"/> {category.category_name}
-                  </Button>
+                  onClick={() => {
+                    setCurrentCategory(category.id);
+                    setCurrentCategoryName(category.category_name);
+                    console.log(currentCategory);
+                  }}
+                  className={`group rounded-[5px] flex justify-between items-center hover:bg-[#eff1f4] ${category.id === currentCategory && 'bg-[#e0e2e6] hover:bg-[#e0e2e6]'}`}
+                  key={category.id}
+                >
+                  <div className="flex items-center">
+                    <AssignmentIcon className="text-[#b1b4b7] mr-[5px]" />
+                    {category.category_name}
+                  </div>
+                  <ContextMenu>
+                    <ContextMenuTrigger>
+                      <MoreHorizIcon className="invisible group-hover:visible justify-end" />
+                    </ContextMenuTrigger>
+                    <ContextMenuContent>
+                      <ContextMenuItem className="hover:font-bold">Rename</ContextMenuItem>
+                      <ContextMenuItem className="hover:font-bold">Delete</ContextMenuItem>
+                    </ContextMenuContent>
+                  </ContextMenu>
+                </Button>
                 ))}
               </div>
             </section>

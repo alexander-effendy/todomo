@@ -39,6 +39,7 @@ const Home = () => {
     // the name of the new subcategory (from UseState)
     const token = await getToken();
     await postSubcategory(token, currentAddSubcategory, currentCategory);
+    setUpdate(!update);
   }
 
   useEffect(() => {

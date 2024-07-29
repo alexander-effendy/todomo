@@ -14,7 +14,7 @@ const router = express.Router();
 // Get all tasks for the authenticated user
 router.get('/categories', verifyToken, async (req, res) => {
   const email = req.query.email;
-  console.log(email);
+  // console.log(email);
   try {
     const result = await pool.query('SELECT * FROM categories WHERE user_email = $1', [email]);
     res.json(result.rows);
@@ -26,7 +26,7 @@ router.get('/categories', verifyToken, async (req, res) => {
 // Add a new task for the authenticated user
 router.post('/categories', verifyToken, async (req, res) => {
   const { name, userEmail } = req.body;
-  console.log(name, userEmail);
+  // console.log(name, userEmail);
   try {
     const result = await pool.query(
       'INSERT INTO categories (user_email, category_name) VALUES ($1, $2) RETURNING *',

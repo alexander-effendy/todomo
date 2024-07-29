@@ -11,10 +11,10 @@ const pool = new Pool({
 
 const router = express.Router();
 // Get all tasks for the authenticated user
-router.get('/generalTasks', verifyToken, async (req, res) => {
+router.get('/tasks', verifyToken, async (req, res) => {
   const categoryId = req.query.categoryId;
   try {
-    const result = await pool.query('SELECT * FROM generalTasks WHERE category = $1', [categoryId]);
+    const result = await pool.query('SELECT * FROM tasks WHERE category = $1', [categoryId]);
     res.json(result.rows);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -22,14 +22,14 @@ router.get('/generalTasks', verifyToken, async (req, res) => {
 });
 
 // Add a new task for the authenticated user
-router.post('/generalTasks', verifyToken, async (req, res) => {
-  // console.log('backend adding taskkkkk');
-  const { generalTaskName, generalTaskDescription, categoryId } = req.body;
-  // console.log(generalTaskName, generalTaskDescription, categoryId);
+router.post('/tasks', verifyToken, async (req, res) => {
+  console.log('backend adding taskkkkk non general');
+  const { taskName, taskStatus, taskDescription, subcategoryId, categoryId } = req.body;
+  console.log(taskName, taskStatus, taskDescription, subcategoryId, categoryId);
   try {
     const result = await pool.query(
-      'INSERT INTO generalTasks (task_name, task_status, task_description, category) VALUES ($1, $2, $3, $4) RETURNING *',
-      [generalTaskName, false, generalTaskDescription, categoryId]
+      'INSERT INTO tasks (task_name, task_status, task_description, subcategory, category) VALUES ($1, $2, $3, $4, $5) RETURNING *',
+      [taskName, taskStatus, taskDescription, subcategoryId, categoryId]
     );
     res.json(result.rows[0]);
   } catch (err) {

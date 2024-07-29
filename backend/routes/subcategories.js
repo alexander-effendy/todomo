@@ -13,8 +13,8 @@ const router = express.Router();
 // Get all tasks for the authenticated user
 router.get('/subcategories', verifyToken, async (req, res) => {
   const categoryId = req.query.categoryId;
-  console.log(categoryId);
-  console.log('backend is trying hard')
+  // console.log(categoryId);
+  // console.log('backend is trying hard')
   try {
     const result = await pool.query('SELECT * FROM subcategories WHERE category = $1', [categoryId]);
     res.json(result.rows);
@@ -25,7 +25,7 @@ router.get('/subcategories', verifyToken, async (req, res) => {
 
 // Add a new task for the authenticated user
 router.post('/subcategories', verifyToken, async (req, res) => {
-  console.log('backend adding subcategories')
+  // console.log('backend adding subcategories')
   const { subcategoryName, categoryId } = req.body;
   try {
     const result = await pool.query(

@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 export const getGeneralTasks = async (token: any, categoryId: any) => {
-  console.log('frontend trying to fetch general tasks');
+  // console.log('frontend trying to fetch general tasks');
   try {
     const response = await axios.get(`http://localhost:3000/api/generalTasks?categoryId=${categoryId}`, {
       headers: {

@@ -6,13 +6,17 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { useKindeAuth } from '@kinde-oss/kinde-auth-react';
 import { getCategory } from '../api/category';
 import { getSubcategory, postSubcategory } from "@/api/subcategory";
-import { getGeneralTasks, postGeneralTasks } from "@/api/generalTasks";
+import { getGeneralTasks, postGeneralTasks } from "@/api/generalTask";
+import { getTasks, postTasks } from "@/api/task";
 
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import AddCategoryModal from '@/component/Dialog/AddCategoryDialog';
 import { Context } from "@/UseContext";
 
 import { Separator } from "@/components/ui/separator"
+import { Checkbox } from "@/components/ui/checkbox"
+
+
 
 const Home = () => {
 
@@ -33,6 +37,9 @@ const Home = () => {
   const [subCategories, setSubcategories] = useState<any>([]);
   const [currentAddTaskId, setCurrentAddTaskId] = useState<Number>(-1);
   const [currentAddTaskName, setCurrentAddTaskName] = useState<string>('');
+
+  const [currentAddTaskSubcategory, setCurrentAddTaskSubcategory] = useState<Number>(-1);
+
   const handleAddSubcategory = async () => {
     // what i need
     // currentCategoryId (from UseContext)
@@ -61,14 +68,15 @@ const Home = () => {
         const token = await getToken();
         const data = await getSubcategory(token, currentCategory);
         setSubcategories(data);
-        console.log(subCategories);
+        // console.log(subCategories);
       }
     };
+
     const fetchGeneralTasks = async () => {
       const token = await getToken();
       const data = await getGeneralTasks(token, currentCategory);
       setGeneralTasks(data);
-      console.log(generalTasks);
+      // console.log(generalTasks);
     }
     fetchSubcategories();
     fetchGeneralTasks();
@@ -80,19 +88,21 @@ const Home = () => {
 
   const [addTaskActive, setAddTaskActive] = useState<any>({});
 
-  const handleAddTaskClick = (id: any) => {
+  const handleAddTaskClick = async (id: any) => {
     console.log(id);
-    setCurrentAddTaskId(id);
+    setCurrentAddTaskSubcategory(id);
+    // setCurrentAddTaskId(id);
     setAddTaskActive((prevState: any) => ({
       ...prevState,
       [id]: !prevState[id],
     }));
+    const token = await getToken();
+    console.log(currentAddTaskName);
+    await postTasks(token, currentAddTaskName, false, 'alex momo', currentAddTaskSubcategory, currentCategory);
+    setUpdate(!update);
   };
 
   const handleAddGeneralTasks = async () => {
-    // i need task name
-    // i need task description
-    // i need subcategory id
     const token = await getToken();
     console.log(currentCategory);
     await postGeneralTasks(token, currentAddTaskName, 'alex nehimomo', currentCategory);
@@ -137,7 +147,14 @@ const Home = () => {
                 {/* map existing tasks, empty if none */}
                 {/* general tasks */}
                 {generalTasks.map((generalTask: any) => (
-                  <div key={generalTask.id} className="mt-[15px] h-[35px] border-b-[1px] border-gray-300 w-full">{generalTask.task_name}</div>
+                  <div 
+                    key={generalTask.id} 
+                    className="flex gap-[10px] mt-[15px] h-[35px] border-b-[1px] border-gray-300 w-full"
+                  >
+                    {/* if checkbox clicked, remove generalTask? or mark it as done */}
+                    <Checkbox className="mt-[5px]"/>
+                   {generalTask.task_name}
+                  </div>
                 ))}
 
                 {addTaskGeneralActive || 
@@ -156,7 +173,9 @@ const Home = () => {
                     <input 
                       className="mb-[10px] border-[2px] rounded-[7px] border-gray-400 h-[35px] focus:outline-none px-[15px] w-full mt-[10px]" 
                       placeholder="Insert task name"
-                      onChange={(e) => setCurrentAddTaskName(e.target.value)}
+                      onChange={(e) => {
+                        setCurrentAddTaskName(e.target.value)
+                      }}
                     >
                       
                     </input>
@@ -168,11 +187,13 @@ const Home = () => {
                           handleAddGeneralTasks();
                         }}
                       >
-                        Add task
+                        Add tasks
                       </Button>
                     </section>
                   </div>
                 }
+
+                {/* end of General Tasks */}
 
                 {/* map existing sections, empty if none */}
                 {subCategories.map((subCategory: any) => (
@@ -183,21 +204,30 @@ const Home = () => {
                         {subCategory.subcategory_name}
                       </div>
                     </div>
-                    <div>
-                      <Button
-                        className="mt-5 text-gray-400 items-start pl-0 hover:text-black"
-                        onClick={() => handleAddTaskClick(subCategory.id)}
-                      >
-                        <AddCircleIcon className="mr-[5px]" />
-                        <div className="my-auto">Add task</div>
-                      </Button>
-                    </div>
+                    
+                    {/* map all the tasks that belong to this sub category */}
+                    
+                                        
+
+                    {addTaskActive[subCategory.id] ||
+                      <div>
+                        <Button
+                          className="mt-5 text-gray-400 items-start pl-0 hover:text-black"
+                          onClick={() => handleAddTaskClick(subCategory.id)}
+                        >
+                          <AddCircleIcon className="mr-[5px]" />
+                          <div className="my-auto">Add task</div>
+                        </Button>
+                      </div>
+                    }
+                    
 
                     {addTaskActive[subCategory.id] && (
                       <div className="p-[10px] mt-[10px] w-full border-[2px] border-gray-400 rounded-[10px]">
                         <input
                           className="mb-[10px] focus:outline-none px-[15px] w-full mt-[10px]"
                           placeholder="Task name"
+                          onChange={(e) => setCurrentAddTaskName(e.target.value)}
                         />
                         <section className="flex justify-end gap-2 border-t-[1px] border-gray-400 pt-3">
                           <Button

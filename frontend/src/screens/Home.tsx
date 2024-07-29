@@ -102,7 +102,10 @@ const Home = () => {
     }));
     const token = await getToken();
     console.log(currentAddTaskName);
-    await postTasks(token, currentAddTaskName, false, 'alex momo', currentAddTaskSubcategory, currentCategory);
+    if (currentAddTaskName.length > 0) {
+      await postTasks(token, currentAddTaskName, false, 'alex momo', currentAddTaskSubcategory, currentCategory);
+      setCurrentAddTaskName('');
+    }
     setUpdate(!update);
   };
 

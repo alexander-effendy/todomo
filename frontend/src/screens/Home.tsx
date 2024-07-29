@@ -16,8 +16,6 @@ import { Context } from "@/UseContext";
 import { Separator } from "@/components/ui/separator"
 import { Checkbox } from "@/components/ui/checkbox"
 
-
-
 const Home = () => {
 
   const { currentCategory, setCurrentCategory, update, setUpdate, currentCategoryName, setCurrentCategoryName } = useContext(Context);
@@ -28,11 +26,13 @@ const Home = () => {
 
   const [currentAddSubcategory, setCurrentAddSubcategory] = useState<string>('');
   const [generalTasks, setGeneralTasks] = useState<any>([]);
+  const [tasks, setTasks] = useState<any>([]);
 
   const openModal = () => setCategoryModalOpen(true);
   const closeModal = () => setCategoryModalOpen(false);
 
   const { getToken, isAuthenticated, user } = useKindeAuth();
+
   const [categories, setCategories] = useState<any>([]);
   const [subCategories, setSubcategories] = useState<any>([]);
   const [currentAddTaskId, setCurrentAddTaskId] = useState<Number>(-1);
@@ -68,7 +68,6 @@ const Home = () => {
         const token = await getToken();
         const data = await getSubcategory(token, currentCategory);
         setSubcategories(data);
-        // console.log(subCategories);
       }
     };
 
@@ -76,15 +75,20 @@ const Home = () => {
       const token = await getToken();
       const data = await getGeneralTasks(token, currentCategory);
       setGeneralTasks(data);
-      // console.log(generalTasks);
-    }
+    };
+
+    const fetchTasks = async () => {
+      const token = await getToken();
+      if (currentCategory !== -1) {
+        const data = await getTasks(token, currentCategory);
+        setTasks(data);
+      }
+    };
+
     fetchSubcategories();
     fetchGeneralTasks();
+    fetchTasks();    
   }, [currentCategory, update]);
-
-  useEffect(() => {
-    // void
-  }, [update]);
 
   const [addTaskActive, setAddTaskActive] = useState<any>({});
 
@@ -197,18 +201,28 @@ const Home = () => {
 
                 {/* map existing sections, empty if none */}
                 {subCategories.map((subCategory: any) => (
-                  <div key={subCategory.id} className="w-full mt-[30px] font-bold">
+                  <div key={subCategory.id} className="w-full mt-[30px]">
                     <div className="relative flex items-center">
                       <KeyboardArrowDownIcon className="absolute left-[-30px] top-[50%] transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                      <div className="border-b-[1px] border-gray-300 w-full">
+                      <div className="border-b-[1px] border-gray-300 w-full font-bold">
                         {subCategory.subcategory_name}
                       </div>
                     </div>
                     
                     {/* map all the tasks that belong to this sub category */}
-                    
+                    {/* tasks contains all tasks that belong to this category */}
+                    {/* map it according to the relevant subcategory */}
+                    {tasks.filter((task: any) => task.subcategory === subCategory.id).map((task: any) => (
+                      <div 
+                      key={task.id} 
+                      className="flex gap-[10px] mt-[15px] h-[35px] border-b-[1px] border-gray-300 w-full"
+                    >
+                      {/* if checkbox clicked, remove generalTask? or mark it as done */}
+                      <Checkbox className="mt-[5px]"/>
+                     {task.task_name}
+                    </div>
+                    ))}
                                         
-
                     {addTaskActive[subCategory.id] ||
                       <div>
                         <Button

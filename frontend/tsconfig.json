@@ -19,6 +19,7 @@
     "jsx": "react-jsx",
     "types": ["node"],
     "allowSyntheticDefaultImports": true,
+    "allowImportingTsExtensions": true,
 
     /* Linting */
     "strict": true,

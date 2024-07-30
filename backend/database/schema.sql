@@ -43,8 +43,3 @@ CREATE TABLE IF NOT EXISTS tasks (
   category INTEGER REFERENCES categories(id),
   created_AT TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
-
--- 'DELETE FROM categories WHERE id = $1 RETURNING *', [categoryId]
--- 'DELETE from subcategories where category = $1 RETURNING *', [categoryId]
--- 'DELETE from generalTasks where category = $1 RETURNING *', [categoryId]
--- 'DELETE from tasks where category = $1 RETURNING *', [categoryId]

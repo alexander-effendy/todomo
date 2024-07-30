@@ -1,0 +1,6 @@
+{
+  "build": {
+    "context": "server",
+    "dockerfile": "Backend/Dockerfile"
+  }
+}

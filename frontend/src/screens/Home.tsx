@@ -28,35 +28,37 @@ import {
 
 const Home = () => {
 
+  // useContext
   const { currentCategory, setCurrentCategory, update, setUpdate, currentCategoryName, setCurrentCategoryName } = useContext(Context);
 
+  // utils
+  const { getToken, isAuthenticated, user } = useKindeAuth();
+  
+  // category
   const [categoryModalOpen, setCategoryModalOpen] = useState<boolean>(false);
-  const [addSectionActive, setAddSectionActive] = useState<boolean>(false);
-  const [addTaskGeneralActive, setAddTaskGeneralActive] = useState<boolean>(false);
-
-  const [currentAddSubcategory, setCurrentAddSubcategory] = useState<string>('');
-  const [generalTasks, setGeneralTasks] = useState<any>([]);
-  const [tasks, setTasks] = useState<any>([]);
-
   const [newCategoryName, setNewCategoryName] = useState<string>('');
+  const [categories, setCategories] = useState<any>([]);
+  const [editCategoryActive, setEditCategoryActive] = useState<any>({});
+
+  // subcategory (section)
+  const [addSectionActive, setAddSectionActive] = useState<boolean>(false);
+  const [currentAddSubcategory, setCurrentAddSubcategory] = useState<string>('');
+  const [subCategories, setSubcategories] = useState<any>([]);
+
+  // task
+  const [generalTasks, setGeneralTasks] = useState<any>([]);
+  const [addTaskGeneralActive, setAddTaskGeneralActive] = useState<boolean>(false);
+  const [tasks, setTasks] = useState<any>([]);
+  const [currentAddTaskName, setCurrentAddTaskName] = useState<string>('');
+  const [currentAddTaskSubcategory, setCurrentAddTaskSubcategory] = useState<Number>(-1);
+  const [addTaskActive, setAddTaskActive] = useState<any>({});
+
   const openModal = () => setCategoryModalOpen(true);
   const closeModal = () => setCategoryModalOpen(false);
 
-  const { getToken, isAuthenticated, user } = useKindeAuth();
-
-  const [categories, setCategories] = useState<any>([]);
-  const [subCategories, setSubcategories] = useState<any>([]);
   // const [currentAddTaskId, setCurrentAddTaskId] = useState<Number>(-1);
-  const [currentAddTaskName, setCurrentAddTaskName] = useState<string>('');
-  const [editCategoryActive, setEditCategoryActive] = useState<any>({});
-  const [currentAddTaskSubcategory, setCurrentAddTaskSubcategory] = useState<Number>(-1);
 
-  const handleAddSubcategory = async () => {
-    const token = await getToken();
-    await postSubcategory(token, currentAddSubcategory, currentCategory);
-    setUpdate(!update);
-  }
-
+  // category functions
   const handleDeleteCategory = async (categoryId: Number) => {
     console.log(categoryId);
     const token = await getToken();
@@ -90,49 +92,14 @@ const Home = () => {
     setUpdate(!update);
   };
 
-  useEffect(() => {
-    const fetchCategories = async () => {
-      if (isAuthenticated) {
-        const token = await getToken();
-        if (user) {
-          const data = await getCategory(token, user.email);
-          setCategories(data);
-        }
-      }
-    };
-    fetchCategories();
-  }, [isAuthenticated, getToken, update]);
+  // subcategory functions
+  const handleAddSubcategory = async () => {
+    const token = await getToken();
+    await postSubcategory(token, currentAddSubcategory, currentCategory);
+    setUpdate(!update);
+  }
 
-  useEffect(() => {
-    const fetchSubcategories = async () => {
-      if (isAuthenticated) {
-        const token = await getToken();
-        const data = await getSubcategory(token, currentCategory);
-        setSubcategories(data);
-      }
-    };
-
-    const fetchGeneralTasks = async () => {
-      const token = await getToken();
-      const data = await getGeneralTasks(token, currentCategory);
-      setGeneralTasks(data);
-    };
-
-    const fetchTasks = async () => {
-      const token = await getToken();
-      if (currentCategory !== -1) {
-        const data = await getTasks(token, currentCategory);
-        setTasks(data);
-      }
-    };
-
-    fetchSubcategories();
-    fetchGeneralTasks();
-    fetchTasks();    
-  }, [currentCategory, update]);
-
-  const [addTaskActive, setAddTaskActive] = useState<any>({});
-
+  // task functions
   const handleAddTaskClick = async (id: any) => {
     setCurrentAddTaskSubcategory(id);
     setAddTaskActive((prevState: any) => ({
@@ -153,6 +120,37 @@ const Home = () => {
     await postGeneralTasks(token, currentAddTaskName, 'alex nehimomo', currentCategory);
     setUpdate(!update);
   }
+
+  // useEffects
+  useEffect(() => {
+    const fetchCategories = async () => {
+      if (isAuthenticated) {
+        const token = await getToken();
+        if (user) {
+          const data = await getCategory(token, user.email);
+          setCategories(data);
+        }
+      }
+    };
+    fetchCategories();
+  }, [isAuthenticated, getToken, update]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (isAuthenticated) {
+        const token = await getToken();
+
+        const tasksData = await getTasks(token, currentCategory);
+        const generalTasksData = await getGeneralTasks(token, currentCategory);
+        const subcategoriesData = await getSubcategory(token, currentCategory);
+
+        setSubcategories(subcategoriesData);
+        setGeneralTasks(generalTasksData);
+        setTasks(tasksData);
+      }
+    };
+    fetchData();    
+  }, [currentCategory, update]);
 
   return (
     <MaxWidthWrapper>
@@ -276,8 +274,7 @@ const Home = () => {
                       </div>
                       
                       {/* map all the tasks that belong to this sub category */}
-                      {/* tasks contains all tasks that belong to this category */}
-                      {/* map it according to the relevant subcategory */}
+
                       {tasks.filter((task: any) => task.subcategory === subCategory.id).map((task: any) => (
                         <div 
                         key={task.id} 
@@ -328,7 +325,6 @@ const Home = () => {
                     </div>
                   ))}
 
-
                   {addSectionActive &&
                     <div className="select-none p-[10px] mt-[10px] w-full border-[2px] border-gray-400 rounded-[10px]">
                       <input
@@ -360,7 +356,6 @@ const Home = () => {
                     </Separator>
                   </Button>
                   }
-                  
                 </section>
               </div>
             }

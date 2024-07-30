@@ -1,8 +1,12 @@
 import axios from 'axios';
 
+const api = axios.create({
+  baseURL: import.meta.env.VITE_API_BASE_URL,
+});
+
 export const getCategory = async (token: any, userEmail: any) => {
   try {
-    const response = await axios.get(`http://localhost:3000/api/categories?email=${userEmail}`, {
+    const response = await api.get(`/api/categories?email=${userEmail}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -15,7 +19,7 @@ export const getCategory = async (token: any, userEmail: any) => {
 
 export const postCategory = async (token: any, name: string, userEmail: string | null) => {
   try {
-    const response = await axios.post('http://localhost:3000/api/categories', { name, userEmail }, {
+    const response = await api.post('/api/categories', { name, userEmail }, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -32,7 +36,7 @@ export const deleteCategory = async (token: string | undefined, categoryId: Numb
   console.log(categoryId);
   console.log(token);
   try {
-    const response = await axios.delete(`http://localhost:3000/api/categories/${categoryId}`, {
+    const response = await api.delete(`/api/categories/${categoryId}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -49,7 +53,7 @@ export const renameCategory = async (token: string | undefined, categoryId: Numb
   console.log(categoryId);
   console.log(token);
   try {
-    const response = await axios.put(`http://localhost:3000/api/categories/${categoryId}`, { newCategoryName }, {
+    const response = await api.put(`/api/categories/${categoryId}`, { newCategoryName }, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

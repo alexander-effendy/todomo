@@ -1,9 +1,13 @@
 import axios from 'axios';
 
+const api = axios.create({
+  baseURL: import.meta.env.VITE_API_BASE_URL,
+});
+
 export const getGeneralTasks = async (token: any, categoryId: any) => {
   // console.log('frontend trying to fetch general tasks');
   try {
-    const response = await axios.get(`http://localhost:3000/api/generalTasks?categoryId=${categoryId}`, {
+    const response = await api.get(`/api/generalTasks?categoryId=${categoryId}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -17,7 +21,7 @@ export const getGeneralTasks = async (token: any, categoryId: any) => {
 
 export const postGeneralTasks = async (token: any, generalTaskName: string, generalTaskDescription:string, categoryId: Number | undefined) => {
   try {
-    const response = await axios.post('http://localhost:3000/api/generalTasks', { generalTaskName, generalTaskDescription, categoryId }, {
+    const response = await api.post('/api/generalTasks', { generalTaskName, generalTaskDescription, categoryId }, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

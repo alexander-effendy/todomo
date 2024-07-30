@@ -265,7 +265,7 @@ const Home = () => {
 
                   {/* map existing sections, empty if none */}
                   {subCategories.map((subCategory: any) => (
-                    <div key={subCategory.id} className="w-full mt-[30px]">
+                    <div key={subCategory.id} className="select-none w-full mt-[30px]">
                       <div className="relative flex items-center">
                         <KeyboardArrowDownIcon className="absolute left-[-30px] top-[50%] transform -translate-y-1/2 h-5 w-5 text-gray-400" />
                         <div className="border-b-[1px] border-gray-300 w-full font-bold">
@@ -278,7 +278,7 @@ const Home = () => {
                       {tasks.filter((task: any) => task.subcategory === subCategory.id).map((task: any) => (
                         <div 
                         key={task.id} 
-                        className="flex gap-[10px] mt-[15px] h-[35px] border-b-[1px] border-gray-300 w-full"
+                        className="select-none flex gap-[10px] mt-[15px] h-[35px] border-b-[1px] border-gray-300 w-full"
                       >
                         {/* if checkbox clicked, remove generalTask? or mark it as done */}
                         <Checkbox className="mt-[5px]"/>

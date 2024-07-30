@@ -46,7 +46,7 @@ const Home = () => {
 
   const [categories, setCategories] = useState<any>([]);
   const [subCategories, setSubcategories] = useState<any>([]);
-  const [currentAddTaskId, setCurrentAddTaskId] = useState<Number>(-1);
+  // const [currentAddTaskId, setCurrentAddTaskId] = useState<Number>(-1);
   const [currentAddTaskName, setCurrentAddTaskName] = useState<string>('');
   const [editCategoryActive, setEditCategoryActive] = useState<any>({});
   const [currentAddTaskSubcategory, setCurrentAddTaskSubcategory] = useState<Number>(-1);

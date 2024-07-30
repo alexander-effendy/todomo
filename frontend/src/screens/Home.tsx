@@ -64,8 +64,8 @@ const Home = () => {
     setUpdate(!update);
   }
 
-  const handleRenameCategory = (categoryId: any) => {
-    console.log(categoryId);
+  const handleRenameCategory = (categoryId: any, categoryName: any) => {
+    setNewCategoryName(categoryName);
     setEditCategoryActive((prev: any) => ({
       ...prev,
       [categoryId]: true,
@@ -176,7 +176,6 @@ const Home = () => {
                   onClick={() => {
                     setCurrentCategory(category.id);
                     setCurrentCategoryName(category.category_name);
-                    console.log(currentCategory);
                   }}
                   className={`group rounded-[5px] flex justify-between items-center hover:bg-[#eff1f4] ${category.id === currentCategory && 'bg-[#e0e2e6] hover:bg-[#e0e2e6]'}`}
                   key={category.id}
@@ -187,7 +186,9 @@ const Home = () => {
                       <input 
                         placeholder="insert new category name" 
                         onBlur={() => handleSaveCategoryName(category.id)}
+                        value={newCategoryName}
                         onChange={(e) => setNewCategoryName(e.target.value)}
+                        className="h-[30px]"
                       />
                       :
                       <div>{category.category_name}</div>
@@ -199,7 +200,7 @@ const Home = () => {
                       <MoreHorizIcon className="invisible group-hover:visible justify-end" />
                     </ContextMenuTrigger>
                     <ContextMenuContent>
-                      <ContextMenuItem onClick={() => handleRenameCategory(category.id)} className="hover:font-bold">Rename</ContextMenuItem>
+                      <ContextMenuItem onClick={() => handleRenameCategory(category.id, category.category_name)} className="hover:font-bold">Rename</ContextMenuItem>
                       <ContextMenuItem onClick={() => handleDeleteCategory(category.id)} className="hover:font-bold">Delete</ContextMenuItem>
                     </ContextMenuContent>
                   </ContextMenu>

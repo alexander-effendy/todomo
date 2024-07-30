@@ -27,7 +27,7 @@ const Navbar = () => {
   return (
     <nav className="grid place-items-center sticky z-[100] border-b border-gray-200 bg-white opacity-95 backdrop-filter backdrop-blur-md">
       <MaxWidthWrapper>
-        <div className="flex h-14 items-center justify-between border-b border-zinc-200">
+        <div className="select-none flex h-14 items-center justify-between border-b border-zinc-200">
           <div className="flex z-40 font-semibold text-[18px]">
           todo<span className="text-green-600">mo</span>
           </div>        

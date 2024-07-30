@@ -26,3 +26,37 @@ export const postCategory = async (token: any, name: string, userEmail: string |
     console.error('Error during adding category:', error);
   }
 }
+
+export const deleteCategory = async (token: string | undefined, categoryId: Number | undefined) => {
+  console.log('frontend trying to delete category');
+  console.log(categoryId);
+  console.log(token);
+  try {
+    const response = await axios.delete(`http://localhost:3000/api/categories/${categoryId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error deleting category:', error);
+    throw error;
+  }
+};
+
+export const renameCategory = async (token: string | undefined, categoryId: Number | undefined, newCategoryName: string | undefined) => {
+  console.log('frontend trying to rename category');
+  console.log(categoryId);
+  console.log(token);
+  try {
+    const response = await axios.put(`http://localhost:3000/api/categories/${categoryId}`, { newCategoryName }, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error deleting category:', error);
+    throw error;
+  }
+};

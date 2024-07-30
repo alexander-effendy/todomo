@@ -16,7 +16,7 @@ router.get('/categories', verifyToken, async (req, res) => {
   const email = req.query.email;
   // console.log(email);
   try {
-    const result = await pool.query('SELECT * FROM categories WHERE user_email = $1', [email]);
+    const result = await pool.query('SELECT * FROM categories WHERE user_email = $1 ORDER BY created_AT ASC', [email]);
     res.json(result.rows);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -46,16 +46,9 @@ router.delete('/categories/:id', verifyToken, async (req, res) => {
     // Start a transaction
     await pool.query('BEGIN');
 
-    // Delete all general tasks related to the category
+    // Delete all tasks related to the category
+    await pool.query('DELETE FROM tasks WHERE category = $1', [categoryId]);
     await pool.query('DELETE FROM generalTasks WHERE category = $1', [categoryId]);
-
-    // Delete all tasks related to the subcategories of the category
-    await pool.query(`
-      DELETE FROM tasks 
-      WHERE subcategory IN (SELECT id FROM subcategories WHERE category = $1)
-    `, [categoryId]);
-
-    // Delete all subcategories related to the category
     await pool.query('DELETE FROM subcategories WHERE category = $1', [categoryId]);
 
     // Delete the category
@@ -78,11 +71,11 @@ router.delete('/categories/:id', verifyToken, async (req, res) => {
 // Rename a category by ID
 router.put('/categories/:id', verifyToken, async (req, res) => {
   const categoryId = req.params.id;
-  const { newName } = req.body;
+  const { newCategoryName } = req.body;
   try {
     const result = await pool.query(
       'UPDATE categories SET category_name = $1 WHERE id = $2 RETURNING *',
-      [newName, categoryId]
+      [newCategoryName, categoryId]
     );
     if (result.rowCount === 0) {
       return res.status(404).json({ error: 'Category not found' });

@@ -38,7 +38,7 @@ export default function MyModal({ isOpen, closeModal }: MyModalProps) {
   return (
     <>
       <Transition appear show={isOpen} as={Fragment}>
-        <Dialog as="div" className="relative z-10" onClose={closeModal}>
+        <Dialog as="div" className="select-none relative z-10" onClose={closeModal}>
           <TransitionChild
             as={Fragment}
             enter="ease-out duration-300"

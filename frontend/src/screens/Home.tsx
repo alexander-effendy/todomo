@@ -116,6 +116,7 @@ const Home = () => {
     const fetchCategories = async () => {
       if (isAuthenticated) {
         const token = await getToken();
+        alert(token);
         if (user) {
           const data = await getCategory(token, user.email);
           setCategories(data);
@@ -151,6 +152,9 @@ const Home = () => {
         {isAuthenticated && user ? (
           <section className="flex h-full w-full">
             {/* sidebar */}
+            <div>
+              <div>User: {user.given_name}</div>
+            </div>
             <section className="border-r-[1px] border-gray-300 w-[300px] pr-[15px]">
               <Button 
                 className="select-none mt-[10px] flex justify-start items-center w-full hover:bg-[#eff1f4]"
@@ -180,6 +184,7 @@ const Home = () => {
               <div className="mt-[50px] flex-grow mx-auto max-w-[900px] bg-blue-20s0">
                 <section className="flex flex-col items-start">
                   <span className="text-3xl font-bold mb-5">{currentCategoryName}</span>
+                  
                   {/* map existing tasks, empty if none */}
                   {/* general tasks */}
                   {generalTasks.map((generalTask: any) => (
@@ -265,7 +270,6 @@ const Home = () => {
                           </Button>
                         </div>
                       }
-                      
 
                       {addTaskActive[subCategory.id] && (
                         <div className="select-none p-[10px] mt-[10px] w-full border-[2px] border-gray-400 rounded-[10px]">

@@ -7,10 +7,12 @@ const api = axios.create({
 });
 
 export const handleSignUp = async () => {
+  alert('frontend trying to add user')
   try {
     // Get token from Kinde
-    const { getToken } = useKindeAuth();
+    const { getToken, user } = useKindeAuth();
     const token = await getToken();
+    alert(`user named ${user?.given_name} with the token ${token}`);
     // Send token to backend
     const response = await api.post('/api/auth', {}, {
       headers: {
@@ -19,6 +21,7 @@ export const handleSignUp = async () => {
     });
     // Handle the response
     console.log('User authenticated and added to the database:', response.data);
+    alert(`user added to database!`)
   } catch (error) {
     // Handle errors
     console.error('Error during signing up:', error);

@@ -140,9 +140,11 @@ const Home = () => {
       if (isAuthenticated) {
         const token = await getToken();
 
-        const tasksData = await getTasks(token, currentCategory);
-        const generalTasksData = await getGeneralTasks(token, currentCategory);
-        const subcategoriesData = await getSubcategory(token, currentCategory);
+        const [tasksData, generalTasksData, subcategoriesData] = await Promise.all([
+          getTasks(token, currentCategory),
+          getGeneralTasks(token, currentCategory),
+          getSubcategory(token, currentCategory),
+        ]);
 
         setSubcategories(subcategoriesData);
         setGeneralTasks(generalTasksData);

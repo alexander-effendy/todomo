@@ -2,6 +2,7 @@ const express = require('express');
 const verifyToken = require('../middleware/verifyUser');
 const { Pool } = require('pg');
 const dotenv = require('dotenv');
+const jwt = require('jsonwebtoken');
 
 dotenv.config();
 
@@ -30,6 +31,41 @@ router.post('/auth', verifyToken, async (req, res) =>  {
   } catch (err) {
     console.error('Error inserting user into database:', err);
     return res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+router.post('/verify-token', (req, res) => {
+  const token = req.cookies.token;
+
+  if (!token) {
+    return res.status(401).json({ valid: false });
+  }
+
+  jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+    if (err) {
+      return res.status(401).json({ valid: false });
+    }
+    return res.status(200).json({ valid: true });
+  });
+});
+
+router.post('/login', (req, res) => {
+  const { username, password } = req.body;
+
+  // Verify user credentials (this is just an example, use a real user verification)
+  if (username === 'user' && password === 'password') {
+    const token = jwt.sign({ username }, process.env.JWT_SECRET, { expiresIn: '1h' });
+
+    // Set token in HTTP-only cookie
+    res.cookie('token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict'
+    });
+
+    res.status(200).json({ message: 'Login successful' });
+  } else {
+    res.status(401).json({ message: 'Invalid credentials' });
   }
 });
 

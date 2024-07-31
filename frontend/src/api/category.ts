@@ -5,6 +5,8 @@ const api = axios.create({
 });
 
 export const getCategory = async (token: any, userEmail: any) => {
+  console.log('getting categpory token: ', token);
+  console.log('getting category emai')
   try {
     const response = await api.get(`/api/categories?email=${userEmail}`, {
       headers: {
@@ -19,7 +21,8 @@ export const getCategory = async (token: any, userEmail: any) => {
 }
 
 export const postCategory = async (token: any, name: string, userEmail: string | null) => {
-  
+  console.log('posting category token: ', token);
+  console.log('posting category email: ', userEmail);
   try {
     const response = await api.post('/api/categories', { name, userEmail }, {
       headers: {

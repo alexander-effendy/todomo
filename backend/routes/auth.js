@@ -17,7 +17,7 @@ router.post('/auth', verifyToken, async (req, res) =>  {
   try {
     // Check if user already exists
     const userResult = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
-
+    
     if (userResult.rows.length === 0) {
       // Insert new user if not exists
       await pool.query(

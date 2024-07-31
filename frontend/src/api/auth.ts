@@ -11,10 +11,17 @@ export const handleSignUp = async () => {
   try {
     // Get token from Kinde
     const { getToken, user } = useKindeAuth();
+
     const token = await getToken();
+    const email = user?.email;
+    const username = user?.email;
+    const user_givenName = user?.given_name;
+    const user_familyName = user?.family_name;
+    const id = user?.id;
+
     alert(`user named ${user?.given_name} with the token ${token}`);
     // Send token to backend
-    const response = await api.post('/api/auth', {}, {
+    const response = await api.post('/api/auth', {id, email, username, user_givenName, user_familyName}, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

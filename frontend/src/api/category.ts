@@ -19,6 +19,7 @@ export const getCategory = async (token: any, userEmail: any) => {
 }
 
 export const postCategory = async (token: any, name: string, userEmail: string | null) => {
+  
   try {
     const response = await api.post('/api/categories', { name, userEmail }, {
       headers: {
@@ -28,7 +29,7 @@ export const postCategory = async (token: any, name: string, userEmail: string |
     // console.log('Category added', response.data);
     return response.data;
   } catch (error) {
-    alert('error during adding category');
+    alert('error during adding category: ' + error);
     console.error('Error during adding category:', error);
   }
 }

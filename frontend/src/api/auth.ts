@@ -24,6 +24,7 @@ export const handleSignUp = async () => {
     alert(`user added to database!`)
   } catch (error) {
     // Handle errors
+    alert('error during signing up');
     console.error('Error during signing up:', error);
   }
 }

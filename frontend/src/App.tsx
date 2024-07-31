@@ -15,7 +15,7 @@ function App() {
     <KindeProvider
 		clientId={import.meta.env.VITE_KINDE_CLIENT_ID}
 		domain={import.meta.env.VITE_KINDE_DOMAIN}
-		redirectUri='https://todomo.vercel.app/'
+		redirectUri={import.meta.env.VITE_REDIRECT_URI}
 		logoutUri={import.meta.env.VITE_LOGOUT_URI}
     // redirectUri='localhost:5173'
     // logoutUri='localhost:5173'

@@ -116,7 +116,7 @@ const Home = () => {
     const fetchCategories = async () => {
       if (isAuthenticated) {
         const token = await getToken();
-        alert(token);
+        // alert(`user named ${user?.given_name} with the token ${token}`);
         if (user) {
           const data = await getCategory(token, user.email);
           setCategories(data);
@@ -152,9 +152,6 @@ const Home = () => {
         {isAuthenticated && user ? (
           <section className="flex h-full w-full">
             {/* sidebar */}
-            <div>
-              <div>User: {user.given_name}</div>
-            </div>
             <section className="border-r-[1px] border-gray-300 w-[300px] pr-[15px]">
               <Button 
                 className="select-none mt-[10px] flex justify-start items-center w-full hover:bg-[#eff1f4]"

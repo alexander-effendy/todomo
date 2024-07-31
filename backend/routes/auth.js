@@ -13,11 +13,15 @@ const pool = new Pool({
 const router = express.Router();
 
 router.post('/auth', verifyToken, async (req, res) =>  {
+  console.log(req);
   const { id, email, given_name, family_name } = req.body;
+  console.log('woi');
+  console.log(id, email, given_name);
+
   try {
     // Check if user already exists
     const userResult = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
-    
+
     if (userResult.rows.length === 0) {
       // Insert new user if not exists
       await pool.query(
@@ -34,6 +38,10 @@ router.post('/auth', verifyToken, async (req, res) =>  {
     return res.status(500).json({ error: 'Internal Server Error' });
   }
 });
+
+// kp_794edd6ffe0b4062a07c30e04f7d163b
+// kp_2ff0b207aa7a47ac82c5e99353d51dcd
+
 
 router.post('/verify-token', (req, res) => {
   const token = req.cookies.token;

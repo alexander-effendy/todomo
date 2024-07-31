@@ -4,6 +4,11 @@ import { Button } from '@/components/ui/button';
 import axios from 'axios';
 import { useEffect } from 'react';
 
+const api = axios.create({
+  baseURL: import.meta.env.VITE_API_BASE_URL,
+});
+
+
 const Navbar = () => {
   const { login, register, logout, isAuthenticated, user, getToken } = useKindeAuth();
 
@@ -65,7 +70,7 @@ const handleSignUp = async (getToken: any, user:any) => {
   };
   try {
     const token = await getToken();
-    const response = await axios.post('http://localhost:3000/api/auth', userInfo, {
+    const response = await api.post('/api/auth', userInfo, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

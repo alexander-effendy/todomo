@@ -29,6 +29,7 @@ router.post('/auth', verifyToken, async (req, res) =>  {
       return res.json({ message: 'User already exists in the database. No new user will be added.' });
     }
   } catch (err) {
+    alert('error inserting user into database');
     console.error('Error inserting user into database:', err);
     return res.status(500).json({ error: 'Internal Server Error' });
   }

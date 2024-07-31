@@ -20,8 +20,8 @@ export const handleSignUp = async () => {
       },
     });
     // Handle the response
-    console.log('User authenticated and added to the database:', response.data);
-    alert(`user added to database!`)
+    // console.log('User authenticated and added to the database:', response.data);
+    alert(`user added to database!` + response.data);
   } catch (error) {
     // Handle errors
     alert('error during signing up');

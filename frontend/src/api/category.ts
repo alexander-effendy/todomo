@@ -15,7 +15,6 @@ export const getCategory = async (token: any, userEmail: any) => {
     });
     return response.data;
   } catch (error) {
-    alert('error during fetchign catefgory')
     console.error('Error during fetching categories:', error);
   }
 }

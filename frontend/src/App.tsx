@@ -17,6 +17,8 @@ function App() {
 		domain={import.meta.env.VITE_KINDE_DOMAIN}
 		redirectUri="https://todomo.vercel.app/"
 		logoutUri="https://todomo.vercel.app/"
+    // redirectUri="http://localhost:5173"
+    // logoutUri="http://localhost:5173"
     onRedirectCallback={onRedirectCallback}
 	>
     <ContextProvider>

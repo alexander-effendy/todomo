@@ -9,25 +9,17 @@ import { getSubcategory, postSubcategory } from "@/api/subcategory";
 import { getGeneralTasks, postGeneralTasks } from "@/api/generalTask";
 import { getTasks, postTasks } from "@/api/task";
 
-import AssignmentIcon from '@mui/icons-material/Assignment';
 import AddCategoryModal from '@/component/Dialog/AddCategoryDialog';
 import { Context } from "@/UseContext";
 
 import { Separator } from "@/components/ui/separator"
 import { Checkbox } from "@/components/ui/checkbox"
-import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import Lottie from 'lottie-react';
 import Todo from '@/asset/todo.json';
 
-import {
-  ContextMenu,
-  ContextMenuContent,
-  ContextMenuItem,
-  ContextMenuTrigger,
-} from "@/components/ui/context-menu";
+import CategoryList from '@/component/categoryList';
 
 const Home = () => {
-
   // useContext
   const { currentCategory, setCurrentCategory, update, setUpdate, currentCategoryName, setCurrentCategoryName } = useContext(Context);
 
@@ -55,8 +47,6 @@ const Home = () => {
 
   const openModal = () => setCategoryModalOpen(true);
   const closeModal = () => setCategoryModalOpen(false);
-
-  // const [currentAddTaskId, setCurrentAddTaskId] = useState<Number>(-1);
 
   // category functions
   const handleDeleteCategory = async (categoryId: Number) => {
@@ -170,43 +160,19 @@ const Home = () => {
                 Add Category
               </Button>
               <div className="w-full h-[20px]"></div>
-              <div className="flex flex-col">
-                {categories.map((category: any) => (
-                  <Button 
-                  onClick={() => {
-                    setCurrentCategory(category.id);
-                    setCurrentCategoryName(category.category_name);
-                  }}
-                  className={`group rounded-[5px] flex justify-between items-center hover:bg-[#eff1f4] ${category.id === currentCategory && 'bg-[#e0e2e6] hover:bg-[#e0e2e6]'}`}
-                  key={category.id}
-                >
-                  <div className="flex items-center">
-                    <AssignmentIcon className="text-[#b1b4b7] mr-[5px]" />
-                    {editCategoryActive[category.id] ?
-                      <input 
-                        placeholder="insert new category name" 
-                        onBlur={() => handleSaveCategoryName(category.id)}
-                        value={newCategoryName}
-                        onChange={(e) => setNewCategoryName(e.target.value)}
-                        className="h-[30px]"
-                      />
-                      :
-                      <div>{category.category_name}</div>
-                    }
-                    
-                  </div>
-                  <ContextMenu>
-                    <ContextMenuTrigger>
-                      <MoreHorizIcon className="invisible group-hover:visible justify-end" />
-                    </ContextMenuTrigger>
-                    <ContextMenuContent>
-                      <ContextMenuItem onClick={() => handleRenameCategory(category.id, category.category_name)} className="hover:font-bold">Rename</ContextMenuItem>
-                      <ContextMenuItem onClick={() => handleDeleteCategory(category.id)} className="hover:font-bold">Delete</ContextMenuItem>
-                    </ContextMenuContent>
-                  </ContextMenu>
-                </Button>
-                ))}
-              </div>
+              <CategoryList 
+              categories={categories}
+              currentCategory={currentCategory}
+              setCurrentCategory={setCurrentCategory}
+              setCurrentCategoryName={setCurrentCategoryName}
+              handleRenameCategory={handleRenameCategory}
+              handleDeleteCategory={handleDeleteCategory}
+              editCategoryActive={editCategoryActive}
+              setEditCategoryActive={setEditCategoryActive}
+              handleSaveCategoryName={handleSaveCategoryName}
+              newCategoryName={newCategoryName}
+              setNewCategoryName={setNewCategoryName}
+            />
             </section>
 
             {/* category content */}

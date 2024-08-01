@@ -1,11 +1,14 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
+
 import {
-  ContextMenu,
-  ContextMenuContent,
-  ContextMenuItem,
-  ContextMenuTrigger,
-} from "@/components/ui/context-menu";
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
@@ -49,15 +52,15 @@ const CategoryList: React.FC<CategoryListProps> = React.memo(({ categories, curr
             <div>{category.category_name}</div>
           }
         </div>
-        <ContextMenu>
-          <ContextMenuTrigger>
-            <MoreHorizIcon className="invisible group-hover:visible justify-end" />
-          </ContextMenuTrigger>
-          <ContextMenuContent>
-            <ContextMenuItem onClick={() => handleRenameCategory(category.id, category.category_name)} className="hover:font-bold">Rename</ContextMenuItem>
-            <ContextMenuItem onClick={() => handleDeleteCategory(category.id)} className="hover:font-bold">Delete</ContextMenuItem>
-          </ContextMenuContent>
-        </ContextMenu>
+        <DropdownMenu>
+          <DropdownMenuTrigger><MoreHorizIcon className="invisible group-hover:visible justify-end" /></DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuLabel>Edit Category</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={() => handleRenameCategory(category.id, category.category_name)} >Rename</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => handleDeleteCategory(category.id)}>Delete</DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </Button>
     ))}
   </div>

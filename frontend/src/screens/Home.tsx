@@ -18,6 +18,7 @@ import Lottie from 'lottie-react';
 import Todo from '@/asset/todo.json';
 
 import CategoryList from '@/component/categoryList';
+import GeneralTaskList from '@/component/generalTaskList';
 
 const Home = () => {
   // useContext
@@ -161,76 +162,39 @@ const Home = () => {
                 Add Category
               </Button>
               <div className="w-full h-[20px]"></div>
+              
               <CategoryList 
-              categories={categories}
-              currentCategory={currentCategory}
-              setCurrentCategory={setCurrentCategory}
-              setCurrentCategoryName={setCurrentCategoryName}
-              handleRenameCategory={handleRenameCategory}
-              handleDeleteCategory={handleDeleteCategory}
-              editCategoryActive={editCategoryActive}
-              setEditCategoryActive={setEditCategoryActive}
-              handleSaveCategoryName={handleSaveCategoryName}
-              newCategoryName={newCategoryName}
-              setNewCategoryName={setNewCategoryName}
-            />
+                categories={categories}
+                currentCategory={currentCategory}
+                setCurrentCategory={setCurrentCategory}
+                setCurrentCategoryName={setCurrentCategoryName}
+                handleRenameCategory={handleRenameCategory}
+                handleDeleteCategory={handleDeleteCategory}
+                editCategoryActive={editCategoryActive}
+                setEditCategoryActive={setEditCategoryActive}
+                handleSaveCategoryName={handleSaveCategoryName}
+                newCategoryName={newCategoryName}
+                setNewCategoryName={setNewCategoryName}
+              />
             </section>
 
             {/* category content */}
             {currentCategory !== -1 &&
-              <div className="mt-[50px] flex-grow mx-auto max-w-[900px] bg-blue-20s0">
+              <div className="mt-[50px] flex-grow mx-auto max-w-[800px] bg-blue-20s0">
                 <section className="flex flex-col items-start">
                   <span className="text-3xl font-bold mb-5">{currentCategoryName}</span>
                   
                   {/* map existing tasks, empty if none */}
+
                   {/* general tasks */}
-                  {generalTasks.map((generalTask: any) => (
-                    <div 
-                      key={generalTask.id} 
-                      className="select-none flex gap-[10px] mt-[15px] h-[35px] border-b-[1px] border-gray-300 w-full"
-                    >
-                      {/* if checkbox clicked, remove generalTask? or mark it as done */}
-                      <Checkbox className="mt-[5px]"/>
-                    {generalTask.task_name}
-                    </div>
-                  ))}
-
-                  {addTaskGeneralActive || 
-                    <div>
-                      <Button className="mt-5 text-gray-400 items-start pl-0 hover:text-black"
-                        onClick={() => {setAddTaskGeneralActive(true); setAddSectionActive(false)}}
-                      >       
-                        <AddCircleIcon className="mr-[5px]"/>
-                        <div className="my-auto">Add task</div>
-                      </Button>
-                    </div>
-                  }
-
-                  {addTaskGeneralActive &&
-                    <div className="select-none p-[10px] mt-[10px] w-full rounded-[10px]">
-                      <input 
-                        className="mb-[10px] border-[2px] rounded-[7px] border-gray-400 h-[35px] focus:outline-none px-[15px] w-full mt-[10px]" 
-                        placeholder="Insert task name"
-                        onChange={(e) => {
-                          setCurrentAddTaskName(e.target.value)
-                        }}
-                      >
-                        
-                      </input>
-                      <section className="flex justify-end gap-2 pt-3">
-                        <Button className="bg-gray-100 rounded-[5px] hover:bg-gray-300" onClick={() => setAddTaskGeneralActive(false)}>Cancel</Button>
-                        <Button className="bg-green-200 rounded-[5px] hover:bg-green-300" 
-                          onClick={() => {
-                            setAddTaskGeneralActive(false);
-                            handleAddGeneralTasks();
-                          }}
-                        >
-                          Add tasks
-                        </Button>
-                      </section>
-                    </div>
-                  }
-
+                  <GeneralTaskList 
+                    generalTasks={generalTasks}
+                    addTaskGeneralActive={addTaskGeneralActive}
+                    setAddTaskGeneralActive={setAddTaskGeneralActive}
+                    setAddSectionActive={setAddSectionActive}
+                    setCurrentAddTaskName={setCurrentAddTaskName}
+                    handleAddGeneralTasks={handleAddGeneralTasks}
+                  />
                   {/* end of General Tasks */}
 
                   {/* map existing sections, empty if none */}

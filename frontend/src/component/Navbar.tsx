@@ -4,12 +4,28 @@ import { Button } from '@/components/ui/button';
 import axios from 'axios';
 import { useEffect } from 'react';
 
+import useMediaQuery from '@mui/material/useMediaQuery';
+
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
 });
 
 
 const Navbar = () => {
+
+  const smallScreen = useMediaQuery('(max-width:820px)');
+  const mobileScreen = useMediaQuery('(max-width:530px)');
+
   const { login, register, logout, isAuthenticated, user, getToken } = useKindeAuth();
 
   const handleRegister = async () => {
@@ -44,12 +60,39 @@ const Navbar = () => {
             </div>
           ) : (
             <div>
-              <Button className="hover:underline" onClick={handleRegister}>Features</Button>
-              <Button className="hover:underline" onClick={handleRegister}>For Teams</Button>
-              <Button className="hover:underline" onClick={handleRegister}>Resources</Button>
-              <Button className="hover:underline" onClick={handleRegister}>Pricing</Button>
-              <Button className="hover:underline" onClick={handleLogin}>Login</Button>
-              <Button className="bg-[#e14438] hover:bg-[#c7362b] rounded-[5px] h-[35px] text-white" onClick={handleRegister}>Start for free</Button>
+              {smallScreen ?
+                <div className="flex">
+                  <Select>
+                    <SelectTrigger className="w-[170px]">
+                      <SelectValue placeholder="Our Services" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectItem value="apple">Features</SelectItem>
+                        <SelectItem value="banana">For Teams</SelectItem>
+                        <SelectItem value="blueberry">Resources</SelectItem>
+                        <SelectItem value="grapes" onClick={handleLogin}>Login</SelectItem>
+                        <SelectItem value="pineapple" onClick={handleRegister}>Sign Up</SelectItem>
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                  {mobileScreen ||
+                  <div className="flex">
+                    <Button className="hover:underline" onClick={handleLogin}>Login</Button>
+                    <Button className="bg-[#e14438] hover:bg-[#c7362b] rounded-[5px] h-[35px] text-white" onClick={handleRegister}>Start for free</Button>
+                  </div>
+                  }
+                 
+                </div> :
+                <div>
+                  <Button className="hover:underline" onClick={handleRegister}>Features</Button>
+                  <Button className="hover:underline" onClick={handleRegister}>For Teams</Button>
+                  <Button className="hover:underline" onClick={handleRegister}>Resources</Button>
+                  <Button className="hover:underline" onClick={handleRegister}>Pricing</Button>
+                  <Button className="hover:underline" onClick={handleLogin}>Login</Button>
+                  <Button className="bg-[#e14438] hover:bg-[#c7362b] rounded-[5px] h-[35px] text-white" onClick={handleRegister}>Start for free</Button>
+                </div>
+              }
             </div>
           )}
         </div>

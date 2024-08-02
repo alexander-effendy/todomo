@@ -199,14 +199,17 @@ const Home = () => {
                 <Sheet>
                   <SheetTrigger className="fixed top-[70px] left-[15px]"><DashboardIcon /></SheetTrigger>
                     <SheetContent>
-                      <section className="flex bg-red-200s">
-                      <Button 
-                        className="select-none mt-[10px] flex justify-start items-center w-full hover:bg-[#eff1f4]"
-                        onClick={() => setCategoryModalOpen(true)}
-                      >
-                        <AddCircleIcon className="mr-[5px] text-[#4ca065]"/>
-                        Add Category
-                      </Button>
+                      <section className="flex">
+                      <SheetClose>
+                        <Button 
+                          className="select-none flex justify-start items-center w-[300px] hover:bg-[#eff1f4]"
+                          onClick={() => setCategoryModalOpen(true)}
+                        > 
+                          <AddCircleIcon className="mr-[5px] text-[#4ca065]"/>
+                          Add Category
+                        </Button>
+                      </SheetClose>
+                      
                       {/* <StorageIcon className="text-gray-300 mt-[16px] hover:cursor-pointer" /> */}
                     </section>
                 
@@ -333,16 +336,17 @@ const Home = () => {
                     </div>
                   }
                   {!addSectionActive &&
-                  <Button className={`w-full flex bg-none text-white hover:text-black ${addSectionActive && 'text-black'}`}
+                  <Button className={`w-full flex bg-none ${mobileScreen ? 'text-black' : 'text-white hover:text-black'} ${addSectionActive && 'text-black'}`}
                     onClick={() => { setAddSectionActive(true); setAddTaskActive(false)}}
                   >
                     <Separator asChild className="my-3 bg-background">
-                      <div className="opacity-0 hover:opacity-100 visible py-3 flex items-center text-xs text-black uppercase before:flex-[1_1_0%] before:border-t before:border-gray-600 before:me-6 after:flex-[1_1_0%] after:border-t after:border-gray-600 after:ms-6 dark:before:border-gray-700 dark:after:border-gray-700 transition-opacity duration-300">
+                      <div className={` ${mobileScreen ? 'oapcity-100' : 'opacity-0 hover:opacity-100'} visible py-3 flex items-center text-xs text-black uppercase before:flex-[1_1_0%] before:border-t before:border-gray-600 before:me-6 after:flex-[1_1_0%] after:border-t after:border-gray-600 after:ms-6 dark:before:border-gray-700 dark:after:border-gray-700 transition-opacity duration-300`}>
                         Add section
                       </div>
                     </Separator>
                   </Button>
                   }
+                  <div className="w-full mt-[100px]"></div>
                 </section>
               </div>
             }

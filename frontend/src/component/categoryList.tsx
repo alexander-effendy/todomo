@@ -54,7 +54,7 @@ const CategoryList: React.FC<CategoryListProps> = React.memo(({ isMobile, catego
           }
         </div>
         <DropdownMenu>
-          <DropdownMenuTrigger><MoreHorizIcon className="invisible group-hover:visible justify-end" /></DropdownMenuTrigger>
+          <DropdownMenuTrigger><MoreHorizIcon className={`${isMobile ? '' : 'invisible group-hover:visible'} justify-end`} /></DropdownMenuTrigger>
           <DropdownMenuContent>
             <DropdownMenuLabel>Edit Category</DropdownMenuLabel>
             <DropdownMenuSeparator />

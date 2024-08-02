@@ -8,7 +8,8 @@ import { getCategory, deleteCategory, renameCategory } from '@/api/category';
 import { getSubcategory, postSubcategory } from "@/api/subcategory";
 import { getGeneralTasks, postGeneralTasks } from "@/api/generalTask";
 import { getTasks, postTasks } from "@/api/task";
-import StorageIcon from '@mui/icons-material/Storage';
+// import StorageIcon from '@mui/icons-material/Storage';
+import DashboardIcon from '@mui/icons-material/Dashboard';
 
 import AddCategoryModal from '@/component/Dialog/AddCategoryDialog';
 import { Context } from "@/UseContext";
@@ -23,13 +24,16 @@ import GeneralTaskList from '@/component/generalTaskList';
 
 import useMediaQuery from '@mui/material/useMediaQuery';
 
-
-// 850 px --> no more sidebar
+import {
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+  SheetClose
+} from "@/components/ui/sheet";
 
 const Home = () => {
 
   const mobileScreen = useMediaQuery('(max-width:850px)');
-
 
   // useContext
   const { currentCategory, setCurrentCategory, update, setUpdate, currentCategoryName, setCurrentCategoryName } = useContext(Context);
@@ -163,36 +167,69 @@ const Home = () => {
         {isAuthenticated && user ? (
           <section className="flex h-full w-full">
             {/* sidebar */}
+            {!mobileScreen ?
+              <section className="border-r-[1px] border-gray-300 w-[350px] pr-[15px]">
+                <section className="flex bg-red-200s">
+                  <Button 
+                    className="select-none mt-[10px] flex justify-start items-center w-full hover:bg-[#eff1f4]"
+                    onClick={() => setCategoryModalOpen(true)}
+                  >
+                    <AddCircleIcon className="mr-[5px] text-[#4ca065]"/>
+                    Add Category
+                  </Button>
+                  {/* <StorageIcon className="text-gray-300 mt-[16px] hover:cursor-pointer" /> */}
+                </section>
+              
+                <div className="w-full h-[20px]"></div>
+              
+                <CategoryList 
+                  categories={categories}
+                  currentCategory={currentCategory}
+                  setCurrentCategory={setCurrentCategory}
+                  setCurrentCategoryName={setCurrentCategoryName}
+                  handleRenameCategory={handleRenameCategory}
+                  handleDeleteCategory={handleDeleteCategory}
+                  editCategoryActive={editCategoryActive}
+                  setEditCategoryActive={setEditCategoryActive}
+                  handleSaveCategoryName={handleSaveCategoryName}
+                  newCategoryName={newCategoryName}
+                  setNewCategoryName={setNewCategoryName}
+                />
+              </section> :
+                <Sheet className="pt-[100px] bg-blue-200s w-[350px]">
+                  <SheetTrigger className="absolute top-[70px] left-[15px]"><DashboardIcon /></SheetTrigger>
+                    <SheetContent>
+                      <section className="flex bg-red-200s">
+                      <Button 
+                        className="select-none mt-[10px] flex justify-start items-center w-full hover:bg-[#eff1f4]"
+                        onClick={() => setCategoryModalOpen(true)}
+                      >
+                        <AddCircleIcon className="mr-[5px] text-[#4ca065]"/>
+                        Add Category
+                      </Button>
+                      {/* <StorageIcon className="text-gray-300 mt-[16px] hover:cursor-pointer" /> */}
+                    </section>
+                
+                    <div className="w-full h-[20px]"></div>
+                    <SheetClose>
+                    <CategoryList
+                      categories={categories}
+                      currentCategory={currentCategory}
+                      setCurrentCategory={setCurrentCategory}
+                      setCurrentCategoryName={setCurrentCategoryName}
+                      handleRenameCategory={handleRenameCategory}
+                      handleDeleteCategory={handleDeleteCategory}
+                      editCategoryActive={editCategoryActive}
+                      setEditCategoryActive={setEditCategoryActive}
+                      handleSaveCategoryName={handleSaveCategoryName}
+                      newCategoryName={newCategoryName}
+                      setNewCategoryName={setNewCategoryName}
+                    />
 
-            {!mobileScreen &&
-            <section className="border-r-[1px] border-gray-300 w-[350px] pr-[15px]">
-            <section className="flex bg-red-200s">
-              <Button 
-                className="select-none mt-[10px] flex justify-start items-center w-full hover:bg-[#eff1f4]"
-                onClick={() => setCategoryModalOpen(true)}
-              >
-                <AddCircleIcon className="mr-[5px] text-[#4ca065]"/>
-                Add Category
-              </Button>
-              <StorageIcon className="text-gray-300 mt-[16px] hover:cursor-pointer" />
-            </section>
-            
-            <div className="w-full h-[20px]"></div>
-            
-            <CategoryList 
-              categories={categories}
-              currentCategory={currentCategory}
-              setCurrentCategory={setCurrentCategory}
-              setCurrentCategoryName={setCurrentCategoryName}
-              handleRenameCategory={handleRenameCategory}
-              handleDeleteCategory={handleDeleteCategory}
-              editCategoryActive={editCategoryActive}
-              setEditCategoryActive={setEditCategoryActive}
-              handleSaveCategoryName={handleSaveCategoryName}
-              newCategoryName={newCategoryName}
-              setNewCategoryName={setNewCategoryName}
-            />
-          </section>
+                    </SheetClose>
+                    
+                  </SheetContent>
+                </Sheet>
             }
             
 

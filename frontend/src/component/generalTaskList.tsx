@@ -10,9 +10,10 @@ interface GeneralTaskListProps {
   setAddSectionActive: (status: boolean) => void;
   setCurrentAddTaskName: (name: string) => void;
   handleAddGeneralTasks: () => void;
+  setIsLoading: (isLoading: boolean) => void;
 }
 
-const generalTaskList: React.FC<GeneralTaskListProps> = React.memo(({ generalTasks, addTaskGeneralActive, setAddTaskGeneralActive, setAddSectionActive, setCurrentAddTaskName, handleAddGeneralTasks }) => (
+const generalTaskList: React.FC<GeneralTaskListProps> = React.memo(({ generalTasks, addTaskGeneralActive, setAddTaskGeneralActive, setAddSectionActive, setCurrentAddTaskName, handleAddGeneralTasks, setIsLoading }) => (
     <div className="w-full">
       {/* general tasks */}
       {generalTasks.map((generalTask: any) => (
@@ -54,6 +55,7 @@ const generalTaskList: React.FC<GeneralTaskListProps> = React.memo(({ generalTas
               onClick={() => {
                 setAddTaskGeneralActive(false);
                 handleAddGeneralTasks();
+                setIsLoading(true);
               }}
             >
               Add tasks

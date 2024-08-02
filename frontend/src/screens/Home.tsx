@@ -24,6 +24,8 @@ import GeneralTaskList from '@/component/generalTaskList';
 
 import useMediaQuery from '@mui/material/useMediaQuery';
 
+import Loader from '../component/Loader/Game';
+
 import {
   Sheet,
   SheetContent,
@@ -40,6 +42,7 @@ const Home = () => {
 
   // utils
   const { getToken, isAuthenticated, user } = useKindeAuth();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   
   // category
   const [categoryModalOpen, setCategoryModalOpen] = useState<boolean>(false);
@@ -69,6 +72,7 @@ const Home = () => {
     const token = await getToken();
     await deleteCategory(token, categoryId);
     setUpdate(!update);
+    setIsLoading(false);
   }
 
   const handleRenameCategory = (categoryId: any, categoryName: any) => {
@@ -95,6 +99,7 @@ const Home = () => {
     }));
     setNewCategoryName('');
     setUpdate(!update);
+    setIsLoading(false);
   };
 
   // subcategory functions
@@ -135,10 +140,14 @@ const Home = () => {
         if (user) {
           const data = await getCategory(token, user.email);
           setCategories(data);
+          // setTimeout(() => {
+          //   setIsLoading(false);
+          // }, 1000);
         }
       }
     };
     fetchCategories();
+    setIsLoading(false);
   }, [isAuthenticated, getToken, update]);
 
   useEffect(() => {
@@ -156,8 +165,13 @@ const Home = () => {
         setGeneralTasks(generalTasksData);
         setTasks(tasksData);
       }
+      setIsLoading(false);
     };
-    fetchData();    
+    fetchData();
+    // setIsLoading(false);
+    // setTimeout(() => {
+    //   setIsLoading(false);
+    // }, 1000);
   }, [currentCategory, update]);
 
   return (
@@ -195,6 +209,7 @@ const Home = () => {
                   handleSaveCategoryName={handleSaveCategoryName}
                   newCategoryName={newCategoryName}
                   setNewCategoryName={setNewCategoryName}
+                  setIsLoading={setIsLoading}
                 />
               </section> :
                 <Sheet>
@@ -229,6 +244,7 @@ const Home = () => {
                       handleSaveCategoryName={handleSaveCategoryName}
                       newCategoryName={newCategoryName}
                       setNewCategoryName={setNewCategoryName}
+                      setIsLoading={setIsLoading}
                     />
 
                     </SheetClose>
@@ -244,6 +260,9 @@ const Home = () => {
                 <section className="flex flex-col">
                   <span className="text-3xl font-bold mb-5">{currentCategoryName}</span>
                   {/* map existing tasks, empty if none */}
+  
+                  {isLoading && <Loader className="absolute top-1/2 left-1/2"/>}
+                  
 
                   {/* general tasks */}
                   <GeneralTaskList 
@@ -253,6 +272,7 @@ const Home = () => {
                     setAddSectionActive={setAddSectionActive}
                     setCurrentAddTaskName={setCurrentAddTaskName}
                     handleAddGeneralTasks={handleAddGeneralTasks}
+                    setIsLoading={setIsLoading}
                   />
                   {/* end of General Tasks */}
 

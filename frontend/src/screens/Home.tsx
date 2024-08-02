@@ -235,7 +235,7 @@ const Home = () => {
 
             {/* category content */}
             {currentCategory !== -1 &&
-              <div className="mt-[50px] flex-grow mx-auto max-w-[50%] bg-blue-200s">
+              <div className={`mt-[50px] flex-grow mx-auto ${mobileScreen ? 'max-w-[75%]' : 'max-w-[50%]'} bg-blue-200s`}>
                 <section className="flex flex-col">
                   <span className="text-3xl font-bold mb-5">{currentCategoryName}</span>
                   {/* map existing tasks, empty if none */}

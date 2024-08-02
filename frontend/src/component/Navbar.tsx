@@ -75,7 +75,7 @@ const handleSignUp = async (getToken: any, user:any) => {
   }
 
   return (
-    <nav className="grid place-items-center sticky z-[100] border-b border-gray-200 bg-white opacity-95 backdrop-filter backdrop-blur-md">
+    <nav className="grid place-items-center inset-0 top-0 sticky z-[100] border-b border-gray-200 bg-white opacity-95 backdrop-filter backdrop-blur-md">
       <MaxWidthWrapper>
         <div className="select-none flex h-14 items-center justify-between border-b border-zinc-200">
           <div className="flex z-40 font-semibold text-[18px]">

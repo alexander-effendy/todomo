@@ -196,8 +196,8 @@ const Home = () => {
                   setNewCategoryName={setNewCategoryName}
                 />
               </section> :
-                <Sheet className="pt-[100px] bg-blue-200s w-[350px]">
-                  <SheetTrigger className="absolute top-[70px] left-[15px]"><DashboardIcon /></SheetTrigger>
+                <Sheet>
+                  <SheetTrigger className="fixed top-[70px] left-[15px]"><DashboardIcon /></SheetTrigger>
                     <SheetContent>
                       <section className="flex bg-red-200s">
                       <Button 
@@ -348,8 +348,9 @@ const Home = () => {
             }
 
             {currentCategory === -1 &&
-              <div className="max-w-[50%] h-full grid place-items-center">
+              <div className="w-full h-full grid place-items-center">
                 <Lottie className="my-auto" animationData={Todo} loop={true} />
+                <div className="text-2xl font-bold">Open sidebar to start hehehe</div>
               </div>
             }
             

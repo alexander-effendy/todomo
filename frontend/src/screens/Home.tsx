@@ -202,7 +202,7 @@ const Home = () => {
                       <section className="flex">
                       <SheetClose>
                         <Button 
-                          className="select-none flex justify-start items-center w-[300px] hover:bg-[#eff1f4]"
+                          className="select-none flex justify-start items-center w-[200px] hover:bg-[#eff1f4]"
                           onClick={() => setCategoryModalOpen(true)}
                         > 
                           <AddCircleIcon className="mr-[5px] text-[#4ca065]"/>

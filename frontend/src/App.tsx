@@ -13,26 +13,25 @@ const onRedirectCallback = (user: any, app_state: any) => {
 function App() {
   return (
     <KindeProvider
-		clientId={import.meta.env.VITE_KINDE_CLIENT_ID}
-		domain={import.meta.env.VITE_KINDE_DOMAIN}
-		redirectUri={import.meta.env.VITE_REDIRECT_URI}
-		logoutUri={import.meta.env.VITE_LOGOUT_URI}
-    // redirectUri='http://localhost:5173'
-    // logoutUri='http://localhost:5173'
-    onRedirectCallback={onRedirectCallback}
-	>
-    <ContextProvider>
-      <BrowserRouter>
-        <div className="flex flex-col h-screen">
-        <Navbar />
-        <div className="h-full flex-grow">
-          <Pages />
-        </div>
-        </div>
-      </BrowserRouter>
-    </ContextProvider>
-    
-  </KindeProvider>
+      clientId={import.meta.env.VITE_KINDE_CLIENT_ID}
+      domain={import.meta.env.VITE_KINDE_DOMAIN}
+      redirectUri={import.meta.env.VITE_REDIRECT_URI}
+      logoutUri={import.meta.env.VITE_LOGOUT_URI}
+      // redirectUri='http://localhost:5173'
+      // logoutUri='http://localhost:5173'
+      onRedirectCallback={onRedirectCallback}
+	  >
+      <ContextProvider>
+        <BrowserRouter>
+          <div className="flex flex-col h-screen">
+          <Navbar />
+          <div className="h-full flex-grow">
+            <Pages />
+          </div>
+          </div>
+        </BrowserRouter>
+      </ContextProvider>
+    </KindeProvider>
   )
 }
 

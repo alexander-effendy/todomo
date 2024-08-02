@@ -28,7 +28,7 @@ interface CategoryListProps {
 }
 
 const CategoryList: React.FC<CategoryListProps> = React.memo(({ categories, currentCategory, setCurrentCategory, setCurrentCategoryName, handleRenameCategory, handleDeleteCategory, editCategoryActive, handleSaveCategoryName, newCategoryName, setNewCategoryName }) => (
-  <div className="flex flex-col w-[330px]">
+  <div className="flex flex-col w-[235px]">
     {categories.map((category: any) => (
       <Button
         onClick={() => {

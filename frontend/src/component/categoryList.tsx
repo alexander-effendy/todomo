@@ -14,6 +14,7 @@ import AssignmentIcon from '@mui/icons-material/Assignment';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 
 interface CategoryListProps {
+  isMobile: boolean;
   categories: any[];
   currentCategory: Number | undefined;
   setCurrentCategory: (id: number) => void;
@@ -27,8 +28,8 @@ interface CategoryListProps {
   setNewCategoryName: (name: string) => void;
 }
 
-const CategoryList: React.FC<CategoryListProps> = React.memo(({ categories, currentCategory, setCurrentCategory, setCurrentCategoryName, handleRenameCategory, handleDeleteCategory, editCategoryActive, handleSaveCategoryName, newCategoryName, setNewCategoryName }) => (
-  <div className="flex flex-col w-[235px]">
+const CategoryList: React.FC<CategoryListProps> = React.memo(({ isMobile, categories, currentCategory, setCurrentCategory, setCurrentCategoryName, handleRenameCategory, handleDeleteCategory, editCategoryActive, handleSaveCategoryName, newCategoryName, setNewCategoryName }) => (
+  <div className={`flex flex-col ${isMobile && 'w-[235px]'}`}>
     {categories.map((category: any) => (
       <Button
         onClick={() => {

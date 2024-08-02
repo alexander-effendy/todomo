@@ -183,6 +183,7 @@ const Home = () => {
                 <div className="w-full h-[20px]"></div>
               
                 <CategoryList 
+                  isMobile={false}
                   categories={categories}
                   currentCategory={currentCategory}
                   setCurrentCategory={setCurrentCategory}
@@ -216,6 +217,7 @@ const Home = () => {
                     <div className="w-full h-[20px]"></div>
                     <SheetClose>
                     <CategoryList
+                      isMobile={true}
                       categories={categories}
                       currentCategory={currentCategory}
                       setCurrentCategory={setCurrentCategory}

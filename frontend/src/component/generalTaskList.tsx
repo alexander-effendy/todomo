@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { Checkbox } from "@/components/ui/checkbox"
 import { Button } from '@/components/ui/button';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
@@ -6,7 +6,7 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { deleteGeneralTasks } from '@/api/generalTask';
 import { useKindeAuth } from '@kinde-oss/kinde-auth-react';
 import { Context } from "@/UseContext";
-import { renameGeneralTasks, checkGeneralTasks } from '@/api/generalTask';
+import { getGeneralTasks, renameGeneralTasks, checkGeneralTasks } from '@/api/generalTask';
 
 import {
   DropdownMenu,
@@ -19,7 +19,6 @@ import {
 
 interface GeneralTaskListProps {
   isMobile: boolean;
-  generalTasks: any[];
   addTaskGeneralActive: boolean;
   setAddTaskGeneralActive: (status: boolean) => void;
   setAddSectionActive: (status: boolean) => void;
@@ -28,10 +27,10 @@ interface GeneralTaskListProps {
   setIsLoading: (isLoading: boolean) => void;
 }
 
-const generalTaskList: React.FC<GeneralTaskListProps> = React.memo(({ isMobile, generalTasks, addTaskGeneralActive, setAddTaskGeneralActive, setAddSectionActive, setCurrentAddTaskName, handleAddGeneralTasks, setIsLoading }) => {
+const generalTaskList: React.FC<GeneralTaskListProps> = React.memo(({ isMobile, addTaskGeneralActive, setAddTaskGeneralActive, setAddSectionActive, setCurrentAddTaskName, handleAddGeneralTasks, setIsLoading }) => {
   const { getToken } = useKindeAuth();
 
-  const { update, setUpdate } = useContext(Context);
+  const { update, setUpdate, currentCategory } = useContext(Context);
 
   const [taskNewName, setTaskNewName] = useState<string>('');
   const [editGeneralTaskActive, setEditGeneralTaskActive] = useState<any>({});
@@ -47,7 +46,7 @@ const generalTaskList: React.FC<GeneralTaskListProps> = React.memo(({ isMobile, 
   const handleSaveGeneralTaskName = async (taskId: any) => {
     setIsLoading(true);
     const token = await getToken();
-    await renameGeneralTasks(token, taskId, taskNewName)
+    await renameGeneralTasks(token, taskId, taskNewName);
     
     // After saving, set the edit mode to false
     setEditGeneralTaskActive((prev: any) => ({
@@ -69,16 +68,36 @@ const generalTaskList: React.FC<GeneralTaskListProps> = React.memo(({ isMobile, 
     if (e.key === 'Enter') handleSaveGeneralTaskName(taskId);
   }
 
+  const [tasks, setTasks] = useState<any>([]);
+
+  useEffect(() => {
+    const fetchTasks = async () => {
+      const token = await getToken();
+      const fetchedTasks = await getGeneralTasks(token, currentCategory)
+      setTasks(fetchedTasks)
+    }
+    fetchTasks();
+    console.log(tasks);
+  }, [currentCategory, update])
+
   const handleCheckChange = async (taskId: Number | undefined) => {
+
+    // frontend (instant UI update)
+    const updatedTasks = tasks.map((task: any) => 
+      task.id === taskId ? { ...task, task_status: !task.task_status } : task
+    )
+    setTasks(updatedTasks)
+
+    // backend doing api call under the hood without the user knowing
     const token = await getToken();
     await checkGeneralTasks(token, taskId);
-    setUpdate(!update);
+    // setUpdate(!update);
   }
 
   return (
     <div className="w-full ">
       {/* general tasks */}
-      {generalTasks.map((generalTask: any) => (
+      {tasks.map((generalTask: any) => (
         <div
           key={generalTask.id} 
           className="hover:bg-[#fcfafa] group hover:cursor-pointer select-none justify-between flex py-[14px] border-b-[1px] border-gray-300 w-full"
@@ -98,6 +117,7 @@ const generalTaskList: React.FC<GeneralTaskListProps> = React.memo(({ isMobile, 
               <Checkbox 
                 checked={generalTask.task_status}
                 onCheckedChange={() => handleCheckChange(generalTask.id)}
+                className="flex my-auto"
               />
               {generalTask.task_name}
             </div>

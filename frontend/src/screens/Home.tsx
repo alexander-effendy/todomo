@@ -9,7 +9,7 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { useKindeAuth } from '@kinde-oss/kinde-auth-react';
 import { getCategory, deleteCategory, renameCategory } from '@/api/category';
 import { getSubcategory, postSubcategory, deleteSubcategory, renameSubcategory } from "@/api/subcategory";
-import { getGeneralTasks, postGeneralTasks } from "@/api/generalTask";
+import { postGeneralTasks } from "@/api/generalTask";
 import { getTasks, postTasks, deleteTasks, renameTasks } from "@/api/task";
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
@@ -70,7 +70,7 @@ const Home = () => {
   const [newSubcategoryName, setNewSubcategoryName] = useState<string>('');
 
   // task
-  const [generalTasks, setGeneralTasks] = useState<any>([]);
+  // const [generalTasks, setGeneralTasks] = useState<any>([]);
   const [addTaskGeneralActive, setAddTaskGeneralActive] = useState<boolean>(false);
   const [tasks, setTasks] = useState<any>([]);
   const [currentAddTaskName, setCurrentAddTaskName] = useState<string>('');
@@ -236,14 +236,13 @@ const Home = () => {
       if (isAuthenticated) {
         const token = await getToken();
 
-        const [tasksData, generalTasksData, subcategoriesData] = await Promise.all([
+        const [tasksData, subcategoriesData] = await Promise.all([
           getTasks(token, currentCategory),
-          getGeneralTasks(token, currentCategory),
           getSubcategory(token, currentCategory),
         ]);
 
         setSubcategories(subcategoriesData);
-        setGeneralTasks(generalTasksData);
+        // setGeneralTasks(generalTasksData);
         setTasks(tasksData);
       }
       setIsLoading(false);
@@ -340,7 +339,6 @@ const Home = () => {
                   {/* general tasks */}
                   <GeneralTaskList
                     isMobile={mobileScreen}
-                    generalTasks={generalTasks}
                     addTaskGeneralActive={addTaskGeneralActive}
                     setAddTaskGeneralActive={setAddTaskGeneralActive}
                     setAddSectionActive={setAddSectionActive}

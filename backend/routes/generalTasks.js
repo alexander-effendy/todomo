@@ -39,7 +39,7 @@ router.post('/generalTasks', verifyToken, async (req, res) => {
 
 router.delete('/generalTasks/:id', verifyToken, async (req, res) => {
   const taskId = req.params.id;
-  console.log(taskId);
+  console.log('backend deleting generalTask with id: ', taskId);
   try {
     // Start a transaction
 

@@ -29,3 +29,18 @@ export const postTasks = async (token: any, taskName: string, taskStatus: boolea
     console.error('Error during adding task:', error);
   }
 }
+
+export const deleteTasks = async (token: any, taskId: Number | undefined) => {
+  console.log('deleting task with id: ', taskId);
+  try {
+    const response = await api.delete(`/api/tasks/${taskId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error deleting general task:', error);
+    throw error;
+  }
+};

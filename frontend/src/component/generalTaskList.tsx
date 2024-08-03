@@ -36,7 +36,7 @@ const generalTaskList: React.FC<GeneralTaskListProps> = React.memo(({ generalTas
   // }
 
   const handleDeleteGeneralTask = async (taskId: Number) => {
-    const token = getToken();
+    const token = await getToken();
     await deleteGeneralTasks(token, taskId);
     setUpdate(!update);
   }
@@ -63,7 +63,6 @@ const generalTaskList: React.FC<GeneralTaskListProps> = React.memo(({ generalTas
             <DropdownMenuItem onClick={() => handleDeleteGeneralTask(generalTask.id)}>Delete</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-          
         </div>
       ))}
 

@@ -34,6 +34,7 @@ export const postGeneralTasks = async (token: any, generalTaskName: string, gene
 }
 
 export const deleteGeneralTasks = async (token: any, taskId: Number | undefined) => {
+  console.log('deleting general task with id: ', taskId);
   try {
     const response = await api.delete(`/api/generalTasks/${taskId}`, {
       headers: {

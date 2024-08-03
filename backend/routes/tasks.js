@@ -37,4 +37,24 @@ router.post('/tasks', verifyToken, async (req, res) => {
   }
 });
 
+router.delete('/tasks/:id', verifyToken, async (req, res) => {
+  const taskId = req.params.id;
+  console.log('backend deleting task with id: ', taskId);
+  try {
+    // Start a transaction
+
+    // Delete task using id
+    const result = await pool.query('DELETE FROM tasks WHERE id = $1', [taskId]);
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: 'taskId not found' });
+    }
+    res.json(result.rows[0]);
+  } catch (err) {
+    // Rollback the transaction in case of an error
+    await pool.query('ROLLBACK');
+    res.status(500).json({ error: err.message });
+  }
+});
+
 module.exports = router;

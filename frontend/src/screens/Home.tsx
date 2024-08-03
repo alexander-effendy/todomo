@@ -7,9 +7,10 @@ import { useKindeAuth } from '@kinde-oss/kinde-auth-react';
 import { getCategory, deleteCategory, renameCategory } from '@/api/category';
 import { getSubcategory, postSubcategory } from "@/api/subcategory";
 import { getGeneralTasks, postGeneralTasks } from "@/api/generalTask";
-import { getTasks, postTasks } from "@/api/task";
+import { getTasks, postTasks, deleteTasks } from "@/api/task";
 // import StorageIcon from '@mui/icons-material/Storage';
 import DashboardIcon from '@mui/icons-material/Dashboard';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
 
 import AddCategoryModal from '@/component/Dialog/AddCategoryDialog';
 import { Context } from "@/UseContext";
@@ -25,6 +26,15 @@ import GeneralTaskList from '@/component/generalTaskList';
 import useMediaQuery from '@mui/material/useMediaQuery';
 
 import Loader from '../component/Loader/Game';
+
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 import {
   Sheet,
@@ -129,6 +139,12 @@ const Home = () => {
     setUpdate(!update);
   }
 
+  const handleDeleteTasks = async (taskId: Number) => {
+    const token = await getToken();
+    await deleteTasks(token, taskId);
+    setUpdate(!update);
+  }
+
   // useEffects
   useEffect(() => {
     const fetchCategories = async () => {
@@ -149,6 +165,7 @@ const Home = () => {
   }, [isAuthenticated, getToken, update]);
 
   useEffect(() => {
+    setIsLoading(true);
     const fetchData = async () => {
       if (isAuthenticated) {
         const token = await getToken();
@@ -166,10 +183,6 @@ const Home = () => {
       setIsLoading(false);
     };
     fetchData();
-    // setIsLoading(false);
-    // setTimeout(() => {
-    //   setIsLoading(false);
-    // }, 1000);
   }, [currentCategory, update]);
 
   return (
@@ -189,7 +202,6 @@ const Home = () => {
                     <AddCircleIcon className="mr-[5px] text-[#4ca065]"/>
                     Add Category
                   </Button>
-                  {/* <StorageIcon className="text-gray-300 mt-[16px] hover:cursor-pointer" /> */}
                 </section>
               
                 <div className="w-full h-[20px]"></div>
@@ -207,6 +219,7 @@ const Home = () => {
                   handleSaveCategoryName={handleSaveCategoryName}
                   newCategoryName={newCategoryName}
                   setNewCategoryName={setNewCategoryName}
+                  setIsLoading={setIsLoading}
                 />
               </section> :
                 <Sheet>
@@ -228,23 +241,22 @@ const Home = () => {
                 
                     <div className="w-full h-[20px]"></div>
                     <SheetClose>
-                    <CategoryList
-                      isMobile={true}
-                      categories={categories}
-                      currentCategory={currentCategory}
-                      setCurrentCategory={setCurrentCategory}
-                      setCurrentCategoryName={setCurrentCategoryName}
-                      handleRenameCategory={handleRenameCategory}
-                      handleDeleteCategory={handleDeleteCategory}
-                      editCategoryActive={editCategoryActive}
-                      setEditCategoryActive={setEditCategoryActive}
-                      handleSaveCategoryName={handleSaveCategoryName}
-                      newCategoryName={newCategoryName}
-                      setNewCategoryName={setNewCategoryName}
-                    />
-
+                      <CategoryList
+                        isMobile={true}
+                        categories={categories}
+                        currentCategory={currentCategory}
+                        setCurrentCategory={setCurrentCategory}
+                        setCurrentCategoryName={setCurrentCategoryName}
+                        handleRenameCategory={handleRenameCategory}
+                        handleDeleteCategory={handleDeleteCategory}
+                        editCategoryActive={editCategoryActive}
+                        setEditCategoryActive={setEditCategoryActive}
+                        handleSaveCategoryName={handleSaveCategoryName}
+                        newCategoryName={newCategoryName}
+                        setNewCategoryName={setNewCategoryName}
+                        setIsLoading={setIsLoading}
+                      />
                     </SheetClose>
-                    
                   </SheetContent>
                 </Sheet>
             }
@@ -259,7 +271,6 @@ const Home = () => {
   
                   {isLoading && <Loader className="absolute top-1/2 left-1/2"/>}
                   
-
                   {/* general tasks */}
                   <GeneralTaskList 
                     generalTasks={generalTasks}
@@ -283,16 +294,27 @@ const Home = () => {
                       </div>
                       
                       {/* map all the tasks that belong to this sub category */}
-
                       {tasks.filter((task: any) => task.subcategory === subCategory.id).map((task: any) => (
-                        <div 
-                        key={task.id} 
-                        className="select-none flex gap-[10px] mt-[15px] h-[35px] border-b-[1px] border-gray-300 w-full"
-                      >
-                        {/* if checkbox clicked, remove generalTask? or mark it as done */}
-                        <Checkbox className="mt-[5px]"/>
-                      {task.task_name}
-                      </div>
+                       <div
+                          key={task.id} 
+                          className="group hover:cursor-pointer select-none justify-between flex mt-[15px] pb-[10px] border-b-[1px] border-gray-300 w-full"
+                        >
+                          {/* if checkbox clicked, remove generalTask? or mark it as done */}
+                          <div className="flex gap-[10px]">
+                            <Checkbox className="mt-[5px]"/>
+                            {task.task_name}
+                          </div>
+
+                          <DropdownMenu>
+                            <DropdownMenuTrigger><MoreVertIcon className={`invisible group-hover:visible`}/></DropdownMenuTrigger>
+                            <DropdownMenuContent>
+                              <DropdownMenuLabel>Edit Task</DropdownMenuLabel>
+                              <DropdownMenuSeparator />
+                              <DropdownMenuItem onClick={() => console.log('renaming task with id: ', task.id)}>Rename</DropdownMenuItem>
+                              <DropdownMenuItem onClick={() => handleDeleteTasks(task.id)}>Delete</DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </div>
                       ))}
                                           
                       {addTaskActive[subCategory.id] ||
@@ -346,7 +368,6 @@ const Home = () => {
                         <Button className="bg-green-200 rounded-[5px] hover:bg-green-300" 
                           onClick={() => {
                             setAddSectionActive(false);
-                            // send req api here
                             handleAddSubcategory();
                             setIsLoading(true);
                           }}

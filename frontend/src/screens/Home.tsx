@@ -1,3 +1,5 @@
+// VITE_API_BASE_URL=https://todomo-production.up.railway.app/
+// VITE_API_BASE_URL=http://localhost:3000
 import MaxWidthWrapper from "@/component/MaxWidthWrapper";
 import { Button } from '@/components/ui/button';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
@@ -8,7 +10,6 @@ import { getCategory, deleteCategory, renameCategory } from '@/api/category';
 import { getSubcategory, postSubcategory } from "@/api/subcategory";
 import { getGeneralTasks, postGeneralTasks } from "@/api/generalTask";
 import { getTasks, postTasks, deleteTasks } from "@/api/task";
-// import StorageIcon from '@mui/icons-material/Storage';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 
@@ -148,15 +149,12 @@ const Home = () => {
   // useEffects
   useEffect(() => {
     const fetchCategories = async () => {
+      setIsLoading(true);
       if (isAuthenticated) {
         const token = await getToken();
-        // alert(`user named ${user?.given_name} with the token ${token}`);
         if (user) {
           const data = await getCategory(token, user.email);
           setCategories(data);
-          // setTimeout(() => {
-          //   setIsLoading(false);
-          // }, 1000);
         }
       }
     };

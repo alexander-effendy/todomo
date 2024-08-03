@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import { Checkbox } from "@/components/ui/checkbox"
 import { Button } from '@/components/ui/button';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
@@ -6,6 +6,7 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { deleteGeneralTasks } from '@/api/generalTask';
 import { useKindeAuth } from '@kinde-oss/kinde-auth-react';
 import { Context } from "@/UseContext";
+import { renameGeneralTasks } from '@/api/generalTask';
 
 import {
   DropdownMenu,
@@ -31,9 +32,31 @@ const generalTaskList: React.FC<GeneralTaskListProps> = React.memo(({ generalTas
 
   const { update, setUpdate } = useContext(Context);
 
-  // const handleRenameGeneralTask = (taskId: Number, taskNewName: string | undefined) => {
+  const [taskNewName, setTaskNewName] = useState<string>('');
+  const [editGeneralTaskActive, setEditGeneralTaskActive] = useState<any>({});
 
-  // }
+  const handleRenameGeneralTask = (taskId: any, taskName: any) => {
+    setTaskNewName(taskName);
+    setEditGeneralTaskActive((prev: any) => ({
+      ...prev,
+      [taskId]: true,
+    }));
+  };
+
+  const handleSaveGeneralTaskName = async (taskId: any) => {
+    setIsLoading(true);
+    const token = await getToken();
+    await renameGeneralTasks(token, taskId, taskNewName)
+    
+    // After saving, set the edit mode to false
+    setEditGeneralTaskActive((prev: any) => ({
+      ...prev,
+      [taskId]: false,
+    }));
+    setTaskNewName('');
+    setUpdate(!update);
+    setIsLoading(false);
+  };
 
   const handleDeleteGeneralTask = async (taskId: Number) => {
     const token = await getToken();
@@ -50,16 +73,27 @@ const generalTaskList: React.FC<GeneralTaskListProps> = React.memo(({ generalTas
           className="group hover:cursor-pointer select-none justify-between flex mt-[15px] pb-[10px] border-b-[1px] border-gray-300 w-full"
         >
           {/* if checkbox clicked, remove generalTask? or mark it as done */}
-          <div className="flex gap-[10px]">
-            <Checkbox className="mt-[5px]"/>
-            {generalTask.task_name}
-          </div>
+          {editGeneralTaskActive[generalTask.id] ?
+            <input
+              placeholder="insert new category name"
+              onBlur={() => handleSaveGeneralTaskName(generalTask.id)}
+              value={taskNewName}
+              onChange={(e) => setTaskNewName(e.target.value)}
+              className="h-[30px] border-blue-500 border-[2px] w-full rounded-[7px] p-[7px]"
+            />
+            :
+            <div className="flex gap-[10px]">
+              <Checkbox className="mt-[5px]"/>
+              {generalTask.task_name}
+            </div>
+          }
+          
           <DropdownMenu>
           <DropdownMenuTrigger><MoreVertIcon className={`invisible group-hover:visible`}/></DropdownMenuTrigger>
           <DropdownMenuContent>
             <DropdownMenuLabel>Edit Task</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => console.log('renaming task with id: ', generalTask.id)}>Rename</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => handleRenameGeneralTask(generalTask.id, generalTask.task_name)}>Rename</DropdownMenuItem>
             <DropdownMenuItem onClick={() => handleDeleteGeneralTask(generalTask.id)}>Delete</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

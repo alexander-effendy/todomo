@@ -47,3 +47,17 @@ export const deleteGeneralTasks = async (token: any, taskId: Number | undefined)
     throw error;
   }
 };
+
+export const renameGeneralTasks = async (token: string | undefined, generalTaskId: Number | undefined, newGeneralTaskName: string | undefined) => {
+  try {
+    const response = await api.put(`/api/generalTasks/${generalTaskId}`, { newGeneralTaskName }, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error deleting category:', error);
+    throw error;
+  }
+};

@@ -44,3 +44,17 @@ export const deleteTasks = async (token: any, taskId: Number | undefined) => {
     throw error;
   }
 };
+
+export const renameTasks = async (token: string | undefined, taskId: Number | undefined, newTaskName: string | undefined) => {
+  try {
+    const response = await api.put(`/api/tasks/${taskId}`, { newTaskName }, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error deleting category:', error);
+    throw error;
+  }
+};

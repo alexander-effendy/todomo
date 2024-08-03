@@ -64,6 +64,10 @@ const generalTaskList: React.FC<GeneralTaskListProps> = React.memo(({ generalTas
     setUpdate(!update);
   }
 
+  const handleSaveTaskNameEnter = (e: any, taskId: any) => {
+    if (e.key === 'Enter') handleSaveGeneralTaskName(taskId);
+  }
+
   return (
     <div className="w-full ">
       {/* general tasks */}
@@ -79,6 +83,7 @@ const generalTaskList: React.FC<GeneralTaskListProps> = React.memo(({ generalTas
               onBlur={() => handleSaveGeneralTaskName(generalTask.id)}
               value={taskNewName}
               onChange={(e) => setTaskNewName(e.target.value)}
+              onKeyDown={(e) => handleSaveTaskNameEnter(e, generalTask.id)}
               className="h-[30px] border-blue-500 border-[2px] w-full rounded-[7px] p-[7px]"
             />
             :

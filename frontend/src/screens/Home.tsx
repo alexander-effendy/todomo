@@ -9,7 +9,7 @@ import { useKindeAuth } from '@kinde-oss/kinde-auth-react';
 import { getCategory, deleteCategory, renameCategory } from '@/api/category';
 import { getSubcategory, postSubcategory } from "@/api/subcategory";
 import { getGeneralTasks, postGeneralTasks } from "@/api/generalTask";
-import { getTasks, postTasks, deleteTasks } from "@/api/task";
+import { getTasks, postTasks, deleteTasks, renameTasks } from "@/api/task";
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 
@@ -140,10 +140,40 @@ const Home = () => {
     setUpdate(!update);
   }
 
+  const [taskNewName, setTaskNewName] = useState<string>('');
+  const [editTaskActive, setEditTaskActive] = useState<any>({}); 
+
   const handleDeleteTasks = async (taskId: Number) => {
     const token = await getToken();
     await deleteTasks(token, taskId);
     setUpdate(!update);
+  }
+
+  const handleRenameTask = (taskId: any, taskName: any) => {
+    setTaskNewName(taskName);
+    setEditTaskActive((prev: any) => ({
+      ...prev,
+      [taskId]: true,
+    }));
+  };
+
+  const handleSaveTaskName = async (taskId: any) => {
+    setIsLoading(true);
+    const token = await getToken();
+    await renameTasks(token, taskId, taskNewName)
+    
+    // After saving, set the edit mode to false
+    setEditTaskActive((prev: any) => ({
+      ...prev,
+      [taskId]: false,
+    }));
+    setTaskNewName('');
+    setUpdate(!update);
+    setIsLoading(false);
+  };
+
+  const handleSaveTaskNameEnter = (e: any, taskId: any) => {
+    if (e.key === 'Enter') handleSaveTaskName(taskId);
   }
 
   // useEffects
@@ -298,17 +328,29 @@ const Home = () => {
                           className="group hover:cursor-pointer select-none justify-between flex mt-[15px] pb-[10px] border-b-[1px] border-gray-300 w-full"
                         >
                           {/* if checkbox clicked, remove generalTask? or mark it as done */}
-                          <div className="flex gap-[10px]">
-                            <Checkbox className="mt-[5px]"/>
-                            {task.task_name}
-                          </div>
+                          {editTaskActive[task.id] ?
+                            <input
+                              placeholder="insert new category name"
+                              onBlur={() => handleSaveTaskName(task.id)}
+                              value={taskNewName}
+                              onChange={(e) => setTaskNewName(e.target.value)}
+                              className="h-[30px] border-blue-500 border-[2px] w-full rounded-[7px] p-[7px]"
+                              onKeyDown={(e) => handleSaveTaskNameEnter(e, task.id)}
+                            />
+                            :
+                            <div className="flex gap-[10px]">
+                              <Checkbox className="mt-[5px]"/>
+                              {task.task_name}
+                            </div>
+                          }
+                          
 
                           <DropdownMenu>
                             <DropdownMenuTrigger><MoreVertIcon className={`invisible group-hover:visible`}/></DropdownMenuTrigger>
                             <DropdownMenuContent>
                               <DropdownMenuLabel>Edit Task</DropdownMenuLabel>
                               <DropdownMenuSeparator />
-                              <DropdownMenuItem onClick={() => console.log('renaming task with id: ', task.id)}>Rename</DropdownMenuItem>
+                              <DropdownMenuItem onClick={() => handleRenameTask(task.id, task.task_name)}>Rename</DropdownMenuItem>
                               <DropdownMenuItem onClick={() => handleDeleteTasks(task.id)}>Delete</DropdownMenuItem>
                             </DropdownMenuContent>
                           </DropdownMenu>

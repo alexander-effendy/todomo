@@ -57,4 +57,23 @@ router.delete('/tasks/:id', verifyToken, async (req, res) => {
   }
 });
 
+// Rename a generalTask by ID
+router.put('/tasks/:id', verifyToken, async (req, res) => {
+  const taskId = req.params.id;
+  const { newTaskName } = req.body;
+  console.log(newTaskName, taskId);
+  try {
+    const result = await pool.query(
+      'UPDATE tasks SET task_name = $1 WHERE id = $2 RETURNING *',
+      [newTaskName, taskId]
+    );
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: 'Category not found' });
+    }
+    res.json(result.rows[0]);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 module.exports = router;

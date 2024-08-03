@@ -35,6 +35,10 @@ const CategoryList: React.FC<CategoryListProps> = React.memo(({ isMobile, catego
     if (categoryId !== currentCategory) setIsLoading(true);
   }
 
+  const handleSaveCategoryNameEnter = (e: any, categoryId: any) => {
+    if (e.key === 'Enter') handleSaveCategoryName(categoryId);
+  }
+
   return (
     <div className={`flex flex-col ${isMobile && 'w-[235px]'}`}>
       {categories.map((category: any) => (
@@ -57,6 +61,7 @@ const CategoryList: React.FC<CategoryListProps> = React.memo(({ isMobile, catego
                 value={newCategoryName}
                 onChange={(e) => setNewCategoryName(e.target.value)}
                 className="h-[30px]"
+                onKeyDown={(e) => handleSaveCategoryNameEnter(e, category.id)}
               />
               :
               <div>{category.category_name}</div>

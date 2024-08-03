@@ -14,7 +14,7 @@ const router = express.Router();
 router.get('/tasks', verifyToken, async (req, res) => {
   const categoryId = req.query.categoryId;
   try {
-    const result = await pool.query('SELECT * FROM tasks WHERE category = $1', [categoryId]);
+    const result = await pool.query('SELECT * FROM tasks WHERE category = $1 ORDER BY created_at ASC', [categoryId]);
     res.json(result.rows);
   } catch (err) {
     res.status(500).json({ error: err.message });

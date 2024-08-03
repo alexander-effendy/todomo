@@ -46,7 +46,6 @@ const CategoryList: React.FC<CategoryListProps> = React.memo(({ isMobile, catego
           onClick={() => {
             setCurrentCategory(category.id);
             setCurrentCategoryName(category.category_name);
-            // setIsLoading(true);
             checkNeedLoad(category.id);
           }}
           className={`group rounded-[5px] flex justify-between items-center hover:bg-[#eff1f4] ${category.id === currentCategory && 'bg-[#e0e2e6] hover:bg-[#e0e2e6]'}`}

@@ -38,4 +38,50 @@ router.post('/subcategories', verifyToken, async (req, res) => {
   }
 });
 
+// Delete a category by ID
+router.delete('/subcategories/:id', verifyToken, async (req, res) => {
+  const subcategoryId = req.params.id;
+  console.log('backend deleting subcategory with id: ', subcategoryId);
+  try {
+    // Start a transaction
+    await pool.query('BEGIN');
+
+    // Delete all tasks related to the subcategory
+    await pool.query('DELETE FROM tasks WHERE subcategory = $1', [subcategoryId]);
+    console.log('deleted tasks');
+    const result = await pool.query('DELETE FROM subcategories WHERE id = $1', [subcategoryId]);
+    console.log('deleted subcategory');
+
+    // Commit the transaction
+    await pool.query('COMMIT');
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: 'Category not found' });
+    }
+    res.json(result.rows[0]);
+  } catch (err) {
+    // Rollback the transaction in case of an error
+    await pool.query('ROLLBACK');
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Rename a subcategory by ID
+router.put('/subcategories/:id', verifyToken, async (req, res) => {
+  const subcategoryId = req.params.id;
+  const { newSubcategoryName } = req.body;
+  try {
+    const result = await pool.query(
+      'UPDATE subcategories SET subcategory_name = $1 WHERE id = $2 RETURNING *',
+      [newSubcategoryName, subcategoryId]
+    );
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: 'Category not found' });
+    }
+    res.json(result.rows[0]);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 module.exports = router;

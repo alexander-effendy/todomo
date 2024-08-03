@@ -7,7 +7,7 @@ import { useEffect, useState, useContext } from 'react';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { useKindeAuth } from '@kinde-oss/kinde-auth-react';
 import { getCategory, deleteCategory, renameCategory } from '@/api/category';
-import { getSubcategory, postSubcategory } from "@/api/subcategory";
+import { getSubcategory, postSubcategory, deleteSubcategory } from "@/api/subcategory";
 import { getGeneralTasks, postGeneralTasks } from "@/api/generalTask";
 import { getTasks, postTasks, deleteTasks, renameTasks } from "@/api/task";
 import DashboardIcon from '@mui/icons-material/Dashboard';
@@ -115,6 +115,14 @@ const Home = () => {
   const handleAddSubcategory = async () => {
     const token = await getToken();
     await postSubcategory(token, currentAddSubcategory, currentCategory);
+    setUpdate(!update);
+  }
+
+  const handleDeleteSubcategory = async (subcategoryId: Number) => {
+    console.log(subcategoryId);
+    const token = await getToken();
+    await deleteSubcategory(token, subcategoryId);
+    console.log('delete sub')
     setUpdate(!update);
   }
 
@@ -314,11 +322,22 @@ const Home = () => {
                   {/* map existing sections, empty if none */}
                   {subCategories.map((subCategory: any) => (
                     <div key={subCategory.id} className="select-none w-full mt-[30px]">
-                      <div className="relative flex items-center">
+                      <div className="relative flex items-center ">
                         <KeyboardArrowDownIcon className="absolute left-[-30px] top-[50%] transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                        <div className="border-b-[1px] border-gray-300 w-full font-bold">
+                        <div className="group border-b-[1px] border-gray-300 w-full flex justify-between font-bold h-[35px]">
                           {subCategory.subcategory_name}
+                          <DropdownMenu>
+                          <DropdownMenuTrigger><MoreVertIcon className={`invisible group-hover:visible`}/></DropdownMenuTrigger>
+                          <DropdownMenuContent>
+                            <DropdownMenuLabel>Edit Subcategory</DropdownMenuLabel>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem onClick={() => console.log('renaming')}>Rename</DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => {handleDeleteSubcategory(subCategory.id); setIsLoading(true);}}>Delete</DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
                         </div>
+
+                        
                       </div>
                       
                       {/* map all the tasks that belong to this sub category */}

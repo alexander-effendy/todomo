@@ -7,7 +7,7 @@ import { useEffect, useState, useContext } from 'react';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import { useKindeAuth } from '@kinde-oss/kinde-auth-react';
 import { getCategory, deleteCategory, renameCategory } from '@/api/category';
-import { getSubcategory, postSubcategory, deleteSubcategory } from "@/api/subcategory";
+import { getSubcategory, postSubcategory, deleteSubcategory, renameSubcategory } from "@/api/subcategory";
 import { getGeneralTasks, postGeneralTasks } from "@/api/generalTask";
 import { getTasks, postTasks, deleteTasks, renameTasks } from "@/api/task";
 import DashboardIcon from '@mui/icons-material/Dashboard';
@@ -65,6 +65,8 @@ const Home = () => {
   const [addSectionActive, setAddSectionActive] = useState<boolean>(false);
   const [currentAddSubcategory, setCurrentAddSubcategory] = useState<string>('');
   const [subCategories, setSubcategories] = useState<any>([]);
+  const [editSubcategoryActive, setEditSubcategoryActive] = useState<any>({});
+  const [newSubcategoryName, setNewSubcategoryName] = useState<string>('');
 
   // task
   const [generalTasks, setGeneralTasks] = useState<any>([]);
@@ -124,6 +126,33 @@ const Home = () => {
     await deleteSubcategory(token, subcategoryId);
     console.log('delete sub')
     setUpdate(!update);
+  }
+
+  const handleRenameSubcategory = (subcategoryId: any, subcategoryName: any) => {
+    setNewSubcategoryName(subcategoryName);
+    setEditSubcategoryActive((prev: any) => ({
+      ...prev,
+      [subcategoryId]: true,
+    }));
+  };
+
+  const handleSaveSubcategoryName = async (subcategoryId: any) => {
+    setIsLoading(true);
+    const token = await getToken();
+    await renameSubcategory(token, subcategoryId, newSubcategoryName)
+    
+    // After saving, set the edit mode to false
+    setEditSubcategoryActive((prev: any) => ({
+      ...prev,
+      [subcategoryId]: false,
+    }));
+    setNewSubcategoryName('');
+    setIsLoading(false);
+    setUpdate(!update);
+  };
+
+  const handleSaveSubcategoryNameEnter = (e: any, subCategoryId: any) => {
+    if (e.key === 'Enter') handleSaveSubcategoryName(subCategoryId);
   }
 
   // task functions
@@ -322,20 +351,32 @@ const Home = () => {
                   {/* map existing sections, empty if none */}
                   {subCategories.map((subCategory: any) => (
                     <div key={subCategory.id} className="select-none w-full mt-[30px]">
-                      <div className="relative flex items-center ">
+                      <div className="relative flex items-center">
                         <KeyboardArrowDownIcon className="absolute left-[-30px] top-[50%] transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-                        <div className="group border-b-[1px] border-gray-300 w-full flex justify-between font-bold h-[35px]">
-                          {subCategory.subcategory_name}
-                          <DropdownMenu>
-                          <DropdownMenuTrigger><MoreVertIcon className={`invisible group-hover:visible`}/></DropdownMenuTrigger>
-                          <DropdownMenuContent>
-                            <DropdownMenuLabel>Edit Subcategory</DropdownMenuLabel>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem onClick={() => console.log('renaming')}>Rename</DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => {handleDeleteSubcategory(subCategory.id); setIsLoading(true);}}>Delete</DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                        </div>
+                        {editSubcategoryActive[subCategory.id] ?
+                          <input
+                            placeholder="insert new category name"
+                            onBlur={() => handleSaveSubcategoryName(subCategory.id)}
+                            value={newSubcategoryName}
+                            onChange={(e) => setNewSubcategoryName(e.target.value)}
+                            className="h-[30px] border-[2px] border-blue-500 w-full rounded-[7px] p-[7px]"
+                            onKeyDown={(e) => handleSaveSubcategoryNameEnter(e, subCategory.id)}
+                          />
+                          :
+                          <div className="group border-b-[1px] border-gray-300 w-full flex justify-between font-bold h-[35px]">
+                            {subCategory.subcategory_name}
+                            <DropdownMenu>
+                            <DropdownMenuTrigger><MoreVertIcon className={`invisible group-hover:visible`}/></DropdownMenuTrigger>
+                            <DropdownMenuContent>
+                              <DropdownMenuLabel>Edit Subcategory</DropdownMenuLabel>
+                              <DropdownMenuSeparator />
+                              <DropdownMenuItem onClick={() => handleRenameSubcategory(subCategory.id, subCategory.subcategory_name)}>Rename</DropdownMenuItem>
+                              <DropdownMenuItem onClick={() => {handleDeleteSubcategory(subCategory.id); setIsLoading(true);}}>Delete</DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                          </div>
+                        }
+                        
 
                         
                       </div>

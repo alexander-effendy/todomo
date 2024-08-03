@@ -1,5 +1,6 @@
 // VITE_API_BASE_URL=https://todomo-production.up.railway.app/
 // VITE_API_BASE_URL=http://localhost:3000
+
 import MaxWidthWrapper from "@/component/MaxWidthWrapper";
 import { Button } from '@/components/ui/button';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
@@ -46,7 +47,7 @@ import {
 
 const Home = () => {
 
-  const mobileScreen = useMediaQuery('(max-width:850px)');
+  const mobileScreen = useMediaQuery('(max-width:1366px)');
 
   // useContext
   const { currentCategory, setCurrentCategory, update, setUpdate, currentCategoryName, setCurrentCategoryName } = useContext(Context);
@@ -337,7 +338,8 @@ const Home = () => {
                   {isLoading && <Loader className="absolute top-1/2 left-1/2"/>}
                   
                   {/* general tasks */}
-                  <GeneralTaskList 
+                  <GeneralTaskList
+                    isMobile={mobileScreen}
                     generalTasks={generalTasks}
                     addTaskGeneralActive={addTaskGeneralActive}
                     setAddTaskGeneralActive={setAddTaskGeneralActive}
@@ -366,7 +368,7 @@ const Home = () => {
                           <div className="group border-b-[1px] border-gray-300 w-full flex justify-between font-bold h-[35px]">
                             {subCategory.subcategory_name}
                             <DropdownMenu>
-                            <DropdownMenuTrigger><MoreVertIcon className={`invisible group-hover:visible`}/></DropdownMenuTrigger>
+                            <DropdownMenuTrigger><MoreVertIcon className={`${mobileScreen ? 'visible' : 'invisible group-hover:visible'}`}/></DropdownMenuTrigger>
                             <DropdownMenuContent>
                               <DropdownMenuLabel>Edit Subcategory</DropdownMenuLabel>
                               <DropdownMenuSeparator />
@@ -406,7 +408,7 @@ const Home = () => {
                           
 
                           <DropdownMenu>
-                            <DropdownMenuTrigger><MoreVertIcon className={`invisible group-hover:visible`}/></DropdownMenuTrigger>
+                            <DropdownMenuTrigger><MoreVertIcon className={`${mobileScreen ? 'visible' : 'invisible group-hover:visible'}`}/></DropdownMenuTrigger>
                             <DropdownMenuContent>
                               <DropdownMenuLabel>Edit Task</DropdownMenuLabel>
                               <DropdownMenuSeparator />

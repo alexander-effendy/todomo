@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 interface GeneralTaskListProps {
+  isMobile: boolean;
   generalTasks: any[];
   addTaskGeneralActive: boolean;
   setAddTaskGeneralActive: (status: boolean) => void;
@@ -27,7 +28,7 @@ interface GeneralTaskListProps {
   setIsLoading: (isLoading: boolean) => void;
 }
 
-const generalTaskList: React.FC<GeneralTaskListProps> = React.memo(({ generalTasks, addTaskGeneralActive, setAddTaskGeneralActive, setAddSectionActive, setCurrentAddTaskName, handleAddGeneralTasks, setIsLoading }) => {
+const generalTaskList: React.FC<GeneralTaskListProps> = React.memo(({ isMobile, generalTasks, addTaskGeneralActive, setAddTaskGeneralActive, setAddSectionActive, setCurrentAddTaskName, handleAddGeneralTasks, setIsLoading }) => {
   const { getToken } = useKindeAuth();
 
   const { update, setUpdate } = useContext(Context);
@@ -94,7 +95,7 @@ const generalTaskList: React.FC<GeneralTaskListProps> = React.memo(({ generalTas
           }
           
           <DropdownMenu>
-          <DropdownMenuTrigger><MoreVertIcon className={`invisible group-hover:visible`}/></DropdownMenuTrigger>
+          <DropdownMenuTrigger><MoreVertIcon className={`${isMobile ? 'visible' : 'invisible group-hover:visible'} `}/></DropdownMenuTrigger>
           <DropdownMenuContent>
             <DropdownMenuLabel>Edit Task</DropdownMenuLabel>
             <DropdownMenuSeparator />

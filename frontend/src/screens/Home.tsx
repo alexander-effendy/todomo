@@ -73,6 +73,7 @@ const Home = () => {
     await deleteCategory(token, categoryId);
     setUpdate(!update);
     setIsLoading(false);
+    setCurrentCategory(-1);
   }
 
   const handleRenameCategory = (categoryId: any, categoryName: any) => {
@@ -84,11 +85,7 @@ const Home = () => {
   };
 
   const handleSaveCategoryName = async (categoryId: any) => {
-    // Your logic to save the new category name
-    // For now, we just log it
-    // console.log(newCategoryName[categoryId]);
-    console.log(newCategoryName);
-    // call api here
+    setIsLoading(true);
     const token = await getToken();
     await renameCategory(token, categoryId, newCategoryName)
     
@@ -98,6 +95,7 @@ const Home = () => {
       [categoryId]: false,
     }));
     setNewCategoryName('');
+    setCurrentCategoryName(newCategoryName);
     setUpdate(!update);
     setIsLoading(false);
   };
@@ -209,7 +207,6 @@ const Home = () => {
                   handleSaveCategoryName={handleSaveCategoryName}
                   newCategoryName={newCategoryName}
                   setNewCategoryName={setNewCategoryName}
-                  setIsLoading={setIsLoading}
                 />
               </section> :
                 <Sheet>
@@ -244,7 +241,6 @@ const Home = () => {
                       handleSaveCategoryName={handleSaveCategoryName}
                       newCategoryName={newCategoryName}
                       setNewCategoryName={setNewCategoryName}
-                      setIsLoading={setIsLoading}
                     />
 
                     </SheetClose>
@@ -352,6 +348,7 @@ const Home = () => {
                             setAddSectionActive(false);
                             // send req api here
                             handleAddSubcategory();
+                            setIsLoading(true);
                           }}
                         >Add section</Button>
                       </section>

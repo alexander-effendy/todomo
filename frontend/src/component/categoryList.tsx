@@ -26,17 +26,15 @@ interface CategoryListProps {
   handleSaveCategoryName: (id: number) => void;
   newCategoryName: string;
   setNewCategoryName: (name: string) => void;
-  setIsLoading: (isLoading: boolean) => void;
 }
 
-const CategoryList: React.FC<CategoryListProps> = React.memo(({ isMobile, categories, currentCategory, setCurrentCategory, setCurrentCategoryName, handleRenameCategory, handleDeleteCategory, editCategoryActive, handleSaveCategoryName, newCategoryName, setNewCategoryName, setIsLoading }) => (
+const CategoryList: React.FC<CategoryListProps> = React.memo(({ isMobile, categories, currentCategory, setCurrentCategory, setCurrentCategoryName, handleRenameCategory, handleDeleteCategory, editCategoryActive, handleSaveCategoryName, newCategoryName, setNewCategoryName }) => (
   <div className={`flex flex-col ${isMobile && 'w-[235px]'}`}>
     {categories.map((category: any) => (
       <Button
         onClick={() => {
           setCurrentCategory(category.id);
           setCurrentCategoryName(category.category_name);
-          setIsLoading(true);
         }}
         className={`group rounded-[5px] flex justify-between items-center hover:bg-[#eff1f4] ${category.id === currentCategory && 'bg-[#e0e2e6] hover:bg-[#e0e2e6]'}`}
         key={category.id}

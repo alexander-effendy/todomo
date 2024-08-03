@@ -32,3 +32,17 @@ export const postGeneralTasks = async (token: any, generalTaskName: string, gene
     console.error('Error during adding category:', error);
   }
 }
+
+export const deleteGeneralTasks = async (token: any, taskId: Number | undefined) => {
+  try {
+    const response = await api.delete(`/api/generalTasks/${taskId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error deleting general task:', error);
+    throw error;
+  }
+};

@@ -1,4 +1,4 @@
-import { Dialog, Transition, TransitionChild, DialogTitle } from '@headlessui/react';
+import { Dialog, Transition, TransitionChild, DialogTitle, DialogPanel } from '@headlessui/react';
 import { Fragment, useState, useRef, useContext, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Context } from "@/UseContext";
@@ -12,7 +12,7 @@ interface MyModalProps {
 }
 
 export default function MyModal({ isOpen, closeModal }: MyModalProps) {
-  const { update, setUpdate } = useContext(Context);
+  const { update, setUpdate, currentCategory, setCurrentCategory } = useContext(Context);
   const inputRef = useRef<HTMLInputElement>(null); // Create a ref for the input element
   const [currentCategoryInput, setCurrentCategoryInput] = useState<string>('');
   const { getToken, user } = useKindeAuth();
@@ -30,7 +30,10 @@ export default function MyModal({ isOpen, closeModal }: MyModalProps) {
     }
     if (!user) return;
     const token = await getToken();
-    await postCategory(token, currentCategoryInput, user.email);
+    const res = await postCategory(token, currentCategoryInput, user.email);
+    console.log(res);
+    setCurrentCategory(res.id);
+    console.log(currentCategory);
     setCurrentCategoryInput('');
     setUpdate(!update)
   }
@@ -62,7 +65,7 @@ export default function MyModal({ isOpen, closeModal }: MyModalProps) {
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
+                <DialogPanel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
                   <DialogTitle
                     as="h3"
                     className="text-lg font-medium leading-6 text-gray-900"
@@ -97,7 +100,7 @@ export default function MyModal({ isOpen, closeModal }: MyModalProps) {
                       Add category
                     </Button>
                   </div>
-                </Dialog.Panel>
+                </DialogPanel>
               </TransitionChild>
             </div>
           </div>

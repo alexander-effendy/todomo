@@ -1,7 +1,20 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Checkbox } from "@/components/ui/checkbox"
 import { Button } from '@/components/ui/button';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import { deleteGeneralTasks } from '@/api/generalTask';
+import { useKindeAuth } from '@kinde-oss/kinde-auth-react';
+import { Context } from "@/UseContext";
+
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface GeneralTaskListProps {
   generalTasks: any[];
@@ -13,17 +26,44 @@ interface GeneralTaskListProps {
   setIsLoading: (isLoading: boolean) => void;
 }
 
-const generalTaskList: React.FC<GeneralTaskListProps> = React.memo(({ generalTasks, addTaskGeneralActive, setAddTaskGeneralActive, setAddSectionActive, setCurrentAddTaskName, handleAddGeneralTasks, setIsLoading }) => (
-    <div className="w-full">
+const generalTaskList: React.FC<GeneralTaskListProps> = React.memo(({ generalTasks, addTaskGeneralActive, setAddTaskGeneralActive, setAddSectionActive, setCurrentAddTaskName, handleAddGeneralTasks, setIsLoading }) => {
+  const { getToken } = useKindeAuth();
+
+  const { update, setUpdate } = useContext(Context);
+
+  // const handleRenameGeneralTask = (taskId: Number, taskNewName: string | undefined) => {
+
+  // }
+
+  const handleDeleteGeneralTask = async (taskId: Number) => {
+    const token = getToken();
+    await deleteGeneralTasks(token, taskId);
+    setUpdate(!update);
+  }
+
+  return (
+    <div className="w-full ">
       {/* general tasks */}
       {generalTasks.map((generalTask: any) => (
-        <div 
+        <div
           key={generalTask.id} 
-          className="select-none flex gap-[10px] mt-[15px] pb-[10px] border-b-[1px] border-gray-300 w-full"
+          className="group hover:cursor-pointer select-none justify-between flex mt-[15px] pb-[10px] border-b-[1px] border-gray-300 w-full"
         >
           {/* if checkbox clicked, remove generalTask? or mark it as done */}
-          <Checkbox className="mt-[5px]"/>
-        {generalTask.task_name}
+          <div className="flex gap-[10px]">
+            <Checkbox className="mt-[5px]"/>
+            {generalTask.task_name}
+          </div>
+          <DropdownMenu>
+          <DropdownMenuTrigger><MoreVertIcon className={`invisible group-hover:visible`}/></DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuLabel>Edit Task</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={() => console.log('renaming task with id: ', generalTask.id)}>Rename</DropdownMenuItem>
+            <DropdownMenuItem onClick={() => handleDeleteGeneralTask(generalTask.id)}>Delete</DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+          
         </div>
       ))}
 
@@ -47,7 +87,6 @@ const generalTaskList: React.FC<GeneralTaskListProps> = React.memo(({ generalTas
               setCurrentAddTaskName(e.target.value)
             }}
           >
-            
           </input>
           <section className="flex justify-end gap-2 pt-3">
             <Button className="bg-gray-100 rounded-[5px] hover:bg-gray-300" onClick={() => setAddTaskGeneralActive(false)}>Cancel</Button>
@@ -66,6 +105,5 @@ const generalTaskList: React.FC<GeneralTaskListProps> = React.memo(({ generalTas
       {/* end of General Tasks */}
     </div>
   )
-)
-
+})
 export default generalTaskList;

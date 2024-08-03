@@ -61,3 +61,18 @@ export const renameGeneralTasks = async (token: string | undefined, generalTaskI
     throw error;
   }
 };
+
+export const checkGeneralTasks = async (token: string | undefined, generalTaskId: Number | undefined) => {
+  console.log('frontend update status task id: ', generalTaskId);
+  try {
+    const response = await api.put(`/api/generalTasks/check/${generalTaskId}`, {}, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Error deleting category:', error);
+    throw error;
+  }
+};

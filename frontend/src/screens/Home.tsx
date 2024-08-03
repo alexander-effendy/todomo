@@ -387,7 +387,7 @@ const Home = () => {
                       {tasks.filter((task: any) => task.subcategory === subCategory.id).map((task: any) => (
                        <div
                           key={task.id} 
-                          className="group hover:cursor-pointer select-none justify-between flex mt-[15px] pb-[10px] border-b-[1px] border-gray-300 w-full"
+                          className="hover:bg-[#fcfafa] group hover:cursor-pointer select-none justify-between flex py-[14px] border-b-[1px] border-gray-300 w-full"
                         >
                           {/* if checkbox clicked, remove generalTask? or mark it as done */}
                           {editTaskActive[task.id] ?

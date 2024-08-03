@@ -6,7 +6,7 @@ import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { deleteGeneralTasks } from '@/api/generalTask';
 import { useKindeAuth } from '@kinde-oss/kinde-auth-react';
 import { Context } from "@/UseContext";
-import { renameGeneralTasks } from '@/api/generalTask';
+import { renameGeneralTasks, checkGeneralTasks } from '@/api/generalTask';
 
 import {
   DropdownMenu,
@@ -69,13 +69,19 @@ const generalTaskList: React.FC<GeneralTaskListProps> = React.memo(({ isMobile, 
     if (e.key === 'Enter') handleSaveGeneralTaskName(taskId);
   }
 
+  const handleCheckChange = async (taskId: Number | undefined) => {
+    const token = await getToken();
+    await checkGeneralTasks(token, taskId);
+    setUpdate(!update);
+  }
+
   return (
     <div className="w-full ">
       {/* general tasks */}
       {generalTasks.map((generalTask: any) => (
         <div
           key={generalTask.id} 
-          className="group hover:cursor-pointer select-none justify-between flex mt-[15px] pb-[10px] border-b-[1px] border-gray-300 w-full"
+          className="hover:bg-[#fcfafa] group hover:cursor-pointer select-none justify-between flex py-[14px] border-b-[1px] border-gray-300 w-full"
         >
           {/* if checkbox clicked, remove generalTask? or mark it as done */}
           {editGeneralTaskActive[generalTask.id] ?
@@ -89,7 +95,10 @@ const generalTaskList: React.FC<GeneralTaskListProps> = React.memo(({ isMobile, 
             />
             :
             <div className="flex gap-[10px]">
-              <Checkbox className="mt-[5px]"/>
+              <Checkbox 
+                checked={generalTask.task_status}
+                onCheckedChange={() => handleCheckChange(generalTask.id)}
+              />
               {generalTask.task_name}
             </div>
           }

@@ -76,4 +76,23 @@ router.put('/generalTasks/:id', verifyToken, async (req, res) => {
   }
 });
 
+// update generalTask status
+router.put('/generalTasks/check/:id', verifyToken, async (req, res) => {
+  console.log('backenddd edittt status tadk id gebneral')
+  const taskId = req.params.id;
+  console.log('backend trying to edit this task stayus with is: ', taskId);
+  try {
+    const result = await pool.query(
+      'UPDATE generalTasks SET task_status = NOT task_status where id = $1 RETURNING *',
+      [taskId]
+    );
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: 'Category not found' });
+    }
+    res.json(result.rows[0]);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 module.exports = router;

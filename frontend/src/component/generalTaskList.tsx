@@ -100,7 +100,7 @@ const generalTaskList: React.FC<GeneralTaskListProps> = React.memo(({ isMobile, 
       {tasks.map((generalTask: any) => (
         <div
           key={generalTask.id} 
-          className="hover:bg-[#fcfafa] group hover:cursor-pointer select-none justify-between flex py-[14px] border-b-[1px] border-gray-300 w-full"
+          className="hover:bg-[#fcfafa] group hover:cursor-pointer select-none justify-between flex py-[8px] border-b-[1px] border-gray-300 w-full"
         >
           {/* if checkbox clicked, remove generalTask? or mark it as done */}
           {editGeneralTaskActive[generalTask.id] ?
@@ -113,25 +113,28 @@ const generalTaskList: React.FC<GeneralTaskListProps> = React.memo(({ isMobile, 
               className="h-[30px] border-blue-500 border-[2px] w-full rounded-[7px] p-[7px]"
             />
             :
-            <div className="flex gap-[10px]">
+            <div className="flex gap-[10px] w-full">
               <Checkbox 
                 checked={generalTask.task_status}
                 onCheckedChange={() => handleCheckChange(generalTask.id)}
                 className="flex my-auto"
               />
+              <div className="flex justify-between w-full">
               {generalTask.task_name}
+              <DropdownMenu>
+                <DropdownMenuTrigger><MoreVertIcon className={`${isMobile ? 'visible' : 'invisible group-hover:visible'} `}/></DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuLabel>Edit Task</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => handleRenameGeneralTask(generalTask.id, generalTask.task_name)}>Rename</DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => handleDeleteGeneralTask(generalTask.id)}>Delete</DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+              </div>
             </div>
           }
           
-          <DropdownMenu>
-          <DropdownMenuTrigger><MoreVertIcon className={`${isMobile ? 'visible' : 'invisible group-hover:visible'} `}/></DropdownMenuTrigger>
-          <DropdownMenuContent>
-            <DropdownMenuLabel>Edit Task</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => handleRenameGeneralTask(generalTask.id, generalTask.task_name)}>Rename</DropdownMenuItem>
-            <DropdownMenuItem onClick={() => handleDeleteGeneralTask(generalTask.id)}>Delete</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+          
         </div>
       ))}
 

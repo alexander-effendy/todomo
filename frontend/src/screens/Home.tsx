@@ -10,7 +10,7 @@ import { useKindeAuth } from '@kinde-oss/kinde-auth-react';
 import { getCategory, deleteCategory, renameCategory } from '@/api/category';
 import { getSubcategory, postSubcategory, deleteSubcategory, renameSubcategory } from "@/api/subcategory";
 import { postGeneralTasks } from "@/api/generalTask";
-import { getTasks, postTasks, deleteTasks, renameTasks } from "@/api/task";
+import { getTasks, postTasks, deleteTasks, renameTasks, checkTasks } from "@/api/task";
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 
@@ -101,7 +101,7 @@ const Home = () => {
   const handleSaveCategoryName = async (categoryId: any) => {
     setIsLoading(true);
     const token = await getToken();
-    await renameCategory(token, categoryId, newCategoryName)
+    await renameCategory(token, categoryId, newCategoryName);
     
     // After saving, set the edit mode to false
     setEditCategoryActive((prev: any) => ({
@@ -179,7 +179,7 @@ const Home = () => {
   }
 
   const [taskNewName, setTaskNewName] = useState<string>('');
-  const [editTaskActive, setEditTaskActive] = useState<any>({}); 
+  const [editTaskActive, setEditTaskActive] = useState<any>({});
 
   const handleDeleteTasks = async (taskId: Number) => {
     const token = await getToken();
@@ -213,6 +213,21 @@ const Home = () => {
   const handleSaveTaskNameEnter = (e: any, taskId: any) => {
     if (e.key === 'Enter') handleSaveTaskName(taskId);
   }
+
+  const handleCheckChange = async (taskId: Number | undefined) => {
+    // frontend instant change
+    const updatedTasks = tasks.map((task: any) => 
+      task.id === taskId ? { ...task, task_status: !task.task_status } : task
+    )
+    setTasks(updatedTasks);
+
+    // backend doing api under the hood
+    const token = await getToken();
+    await checkTasks(token, taskId);
+    // setUpdate(!update);
+  }
+
+  
 
   // useEffects
   useEffect(() => {
@@ -363,7 +378,7 @@ const Home = () => {
                             onKeyDown={(e) => handleSaveSubcategoryNameEnter(e, subCategory.id)}
                           />
                           :
-                          <div className="group border-b-[1px] border-gray-300 w-full flex justify-between font-bold h-[35px]">
+                          <div className="group border-b-[1px] border-gray-300 w-full flex justify-between font-bold py-[10px]">
                             {subCategory.subcategory_name}
                             <DropdownMenu>
                             <DropdownMenuTrigger><MoreVertIcon className={`${mobileScreen ? 'visible' : 'invisible group-hover:visible'}`}/></DropdownMenuTrigger>
@@ -376,16 +391,13 @@ const Home = () => {
                           </DropdownMenu>
                           </div>
                         }
-                        
-
-                        
                       </div>
                       
                       {/* map all the tasks that belong to this sub category */}
                       {tasks.filter((task: any) => task.subcategory === subCategory.id).map((task: any) => (
                        <div
                           key={task.id} 
-                          className="hover:bg-[#fcfafa] group hover:cursor-pointer select-none justify-between flex py-[14px] border-b-[1px] border-gray-300 w-full"
+                          className="hover:bg-[#fcfafa] group hover:cursor-pointer select-none justify-between flex py-[8px] border-b-[1px] border-gray-300 w-full"
                         >
                           {/* if checkbox clicked, remove generalTask? or mark it as done */}
                           {editTaskActive[task.id] ?
@@ -399,12 +411,13 @@ const Home = () => {
                             />
                             :
                             <div className="flex gap-[10px]">
-                              <Checkbox className="mt-[5px]"/>
+                              <Checkbox className="mt-[5px]" 
+                                checked={task.task_status}
+                                onCheckedChange={() => handleCheckChange(task.id)}
+                              />
                               {task.task_name}
                             </div>
                           }
-                          
-
                           <DropdownMenu>
                             <DropdownMenuTrigger><MoreVertIcon className={`${mobileScreen ? 'visible' : 'invisible group-hover:visible'}`}/></DropdownMenuTrigger>
                             <DropdownMenuContent>

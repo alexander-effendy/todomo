@@ -76,4 +76,23 @@ router.put('/tasks/:id', verifyToken, async (req, res) => {
   }
 });
 
+// update task status
+router.put('/tasks/check/:id', verifyToken, async (req, res) => {
+  console.log('backenddd edittt status tadk id ')
+  const taskId = req.params.id;
+  console.log('backend trying to edit this task stayus with is: ', taskId);
+  try {
+    const result = await pool.query(
+      'UPDATE tasks SET task_status = NOT task_status where id = $1 RETURNING *',
+      [taskId]
+    );
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: 'task not found' });
+    }
+    res.json(result.rows[0]);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 module.exports = router;
